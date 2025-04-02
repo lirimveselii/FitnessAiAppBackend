@@ -4,5 +4,5 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
-    return response()->json(['message' => 'Hello, World!'], 200);
+    return response()->json(['message' => 'Hello,  Worl d!'], 200);
 });
