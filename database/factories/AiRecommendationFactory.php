@@ -1,7 +1,8 @@
 <?php
 
 namespace Database\Factories;
-
+use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +17,11 @@ class AiRecommendationFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            //
-        ];
+            return [
+                'user_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
+                'recommendation_type' => $this->faker->randomElement(['workout', 'meal_plan', 'health_tip']),
+                'recommendation' => $this->faker->sentence(10),
+            ];
+        
     }
 }

@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ai_recommendations', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
+            $table->id('id')->primary();
+            $table->foreignid('user_id')->constrained('users')->onDelete('cascade');
             $table->enum('recommendation_type', ['workout', 'meal_plan', 'health_tip']);
             $table->text('recommendation');
             $table->timestamps();

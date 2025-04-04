@@ -9,4 +9,10 @@ class AiRecommendation extends Model
 {
     /** @use HasFactory<\Database\Factories\AiRecommendationFactory> */
     use HasFactory;
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

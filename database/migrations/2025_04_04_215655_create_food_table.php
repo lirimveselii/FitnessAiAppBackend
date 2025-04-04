@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('foods', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('meal_plan_id')->constrained('meal_plans')->onDelete('cascade');
+            $table->id('id')->primary();
+            $table->foreignid('meal_plan_id')->constrained('meal_plans')->onDelete('cascade');
             $table->string('name');
             $table->string('serving_size');
             $table->integer('calories')->check('calories > 0');

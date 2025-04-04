@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('workouts', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
+            $table->id('id')->primary();
+            $table->foreignid('user_id')->constrained('users')->onDelete('cascade');
             $table->string('title');
             $table->text('description')->nullable();
             $table->integer('duration_min')->check('duration_min > 0');

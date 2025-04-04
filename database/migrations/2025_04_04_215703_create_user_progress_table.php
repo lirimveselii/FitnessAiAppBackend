@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_progress', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
+            $table->id('id')->primary();
+            $table->foreignid('user_id')->constrained('users')->onDelete('cascade');
             $table->decimal('weight_kg', 5, 2)->check('weight_kg > 0');
             $table->decimal('bmi', 5, 2);
             $table->integer('workout_streak')->default(0);
