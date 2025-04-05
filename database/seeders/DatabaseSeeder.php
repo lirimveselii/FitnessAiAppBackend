@@ -4,6 +4,12 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\AiRecommendation;
+use App\Models\Workout;
+use App\Models\Exercise;
+use App\Models\MealPlan;
+use App\Models\Food;
+use App\Models\UserProgress;
+use App\Models\UserPreference;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -16,6 +22,19 @@ class DatabaseSeeder extends Seeder
     {
         User::factory(10)->create();
         AiRecommendation::factory(10)->create();
+
+        Workout::factory()->count(10)->create();
+        Exercise::factory()->count(10)->create();
+        MealPlan::factory()->count(10)->create();
+        Food::factory()->count(10)->create();
+        UserProgress::factory()->count(10)->create();
+        UserPreference::factory()->count(10)->create();
+
+
+
+
+
+
 
 
         // User::factory()->create(10);
