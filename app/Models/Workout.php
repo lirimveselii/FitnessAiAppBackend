@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Models;
-use\Models\User;
-
+use App\Models\User;
 use App\Models\Exercise;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,8 +15,9 @@ class Workout extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function exercises() 
+    public function exercises()
     {
-        return $this->hasMany(Exercise::class);
+        return $this->belongsToMany(Exercise::class, 'workout_exercise')
+                    ->withPivot('sets', 'reps', 'rest_seconds');
     }
 }

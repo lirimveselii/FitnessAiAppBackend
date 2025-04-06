@@ -10,8 +10,9 @@ class Exercise extends Model
 {
     /** @use HasFactory<\Database\Factories\ExerciseFactory> */
     use HasFactory;
-    public function workout() 
+    public function workouts()
     {
-        return $this->belongsTo(Workout::class);
+        return $this->belongsToMany(Workout::class, 'workout_exercise')
+                    ->withPivot('sets', 'reps', 'rest_seconds');
     }
 }
