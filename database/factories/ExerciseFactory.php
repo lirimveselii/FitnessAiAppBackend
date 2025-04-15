@@ -23,14 +23,18 @@ class ExerciseFactory extends Factory
         $difficultyLevels = ['beginner', 'intermediate', 'advanced'];
         $intensityLevels = ['low', 'moderate', 'high'];
         $tagsOptions = ['strength', 'arms', 'legs', 'cardio', 'HIIT', 'core', 'endurance', 'full_body'];
-
+        $workoutId = Workout::inRandomOrder()->first()->id; 
         return [
             
             'name' => $this->faker->word, // Random exercise name
             'category' => $this->faker->randomElement($categoryOptions),  // Randomly select a category
+            'workout_id' => $workoutId, 
             'muscle_group' => $this->faker->randomElement($muscleGroupOptions),  // Randomly select a muscle group
             'equipment' => $this->faker->randomElement($equipmentOptions),  // Randomly select an equipment
             'description' => $this->faker->text(200),  // Description of the exercise
+            'sets' => fake()->numberBetween(1, 5),
+            'reps' => fake()->numberBetween(5, 20),
+            'rest_seconds' => fake()->numberBetween(15, 90),
             'video_url' => $this->faker->url(),  // URL for exercise video (could be a YouTube link)
             'difficulty_level' => $this->faker->randomElement($difficultyLevels),  // Randomly select a difficulty level
             'calories_burned' => $this->faker->randomFloat(2, 10, 100),  // Random float for calories burned

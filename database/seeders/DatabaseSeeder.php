@@ -10,7 +10,7 @@ use App\Models\MealPlan;
 use App\Models\Food;
 use App\Models\UserProgress;
 use App\Models\UserPreference;
-use App\Models\WorkoutExercise;
+
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         Food::factory()->count(10)->create();
         UserProgress::factory()->count(10)->create();
         UserPreference::factory()->count(10)->create();
-        WorkoutExercise::factory()->count(10)->create();
+     
 
 
 

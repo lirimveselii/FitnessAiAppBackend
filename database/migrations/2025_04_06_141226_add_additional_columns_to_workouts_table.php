@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('workouts', function (Blueprint $table) {
             
             $table->string('workout_type')->nullable();  // e.g., cardio, strength
+            $table->string('workout_day')->nullable();  // e.g., cardio, strength
             $table->decimal('calories_burned', 8, 2)->nullable();  // Estimated calories burned
             $table->string('target_muscle_groups')->nullable();  // e.g., chest, legs, arms
             $table->text('notes')->nullable();  // Optional field for user notes

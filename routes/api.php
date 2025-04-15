@@ -14,5 +14,7 @@ Route::get('/test-ai', [OpenRouterController::class, 'testAI']);
 Route::get('/ask', [WorkoutController::class, 'askHuggingFace']);
 Route::get('/ask1', [WorkoutController::class, 'queryDeepSeek']);
 Route::post('/generate-workout', [WorkoutController::class, 'generateWorkoutPlan']);
+Route::get('/get-all-user-workout', [WorkoutController::class, 'getAllUserWorkouts']);
+
 
 
