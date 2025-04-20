@@ -23,16 +23,16 @@ class AuthController extends Controller
         try {
             // Validate the incoming request data
             $validator = Validator::make($request->all(), [
-                "name" => "required",
-                "email" => "required|email|unique:users,email",
-                "password" => "required",
-                "confirm_password" => "required|same:password",
-                "age" => "required|integer|min:13",
-                "gender" => "required|in:male,female,other",
-                "height_cm" => "required|numeric",
-                "weight_kg" => "required|numeric",
-                "user_type" => "required"
-            ]);
+                    "name" => "required",
+                    "email" => "required|email|unique:users,email",
+                    "password" => "required",
+                    "confirm_password" => "required|same:password",
+                    "age" => "required|integer|min:13",
+                    "gender" => "required|in:male,female,other",
+                    "height_cm" => "required|numeric",
+                    "weight_kg" => "required|numeric",
+                    "user_type" => "required"
+                ]);
     
             if ($validator->fails()) {
                 // Validation failed, return the error messages
@@ -56,6 +56,8 @@ class AuthController extends Controller
                 "user_type" => $request->user_type,
             ]);
 
+            event(new Registered($user));
+            
                 // Log the user registration success
             Log::info("User registered successfully: " . $user->email);
     
