@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('exercises', function (Blueprint $table) {
             $table->id('id')->primary();
+            $table->foreignId('workout_id') 
+            ->constrained()
+            ->onDelete('cascade'); 
             $table->string('name');
             $table->integer('sets')->check('sets > 0');
             $table->integer('reps')->check('reps > 0');

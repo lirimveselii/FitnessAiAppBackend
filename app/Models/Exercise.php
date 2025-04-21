@@ -8,11 +8,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Exercise extends Model
 {
+
+    protected $fillable = [
+        'name',
+        'category',
+        'muscle_group',
+        'video_url',
+        'difficulty_level',
+        'calories_burned',
+        'duration_seconds',
+        'intensity',
+    ];
     /** @use HasFactory<\Database\Factories\ExerciseFactory> */
     use HasFactory;
     public function workouts()
     {
-        return $this->belongsToMany(Workout::class, 'workout_exercise')
-                    ->withPivot('sets', 'reps', 'rest_seconds');
+        return $this->belongsTo(Workout::class);
     }
 }

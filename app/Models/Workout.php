@@ -11,13 +11,29 @@ class Workout extends Model
     /** @use HasFactory<\Database\Factories\WorkoutFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'title',
+        'description',
+        'duration_min',
+        'intensity_level',
+        'workout_type',
+        'calories_burned',
+        'target_muscle_groups',
+        'notes',
+        'status',
+        'workout_date',
+        'difficulty_level',
+        'progress_results',
+        'tags',
+        'rating',
+    ];
     public function user() 
     {
         return $this->belongsTo(User::class);
     }
     public function exercises()
     {
-        return $this->belongsToMany(Exercise::class, 'workout_exercise')
-                    ->withPivot('sets', 'reps', 'rest_seconds');
+        return $this->hasMany(Exercise::class);
     }
 }
