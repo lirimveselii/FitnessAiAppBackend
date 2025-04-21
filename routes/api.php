@@ -21,14 +21,20 @@ Route::get('/verify-email/{id}', [AuthController::class, 'verifyEmail']);
 Route::post('/forget-password', [AuthController::class, 'forgetPassword']);
 // Route::get('/reset-password/{id}', [AuthController::class, 'resetPassword']);
 
+Route::middleware(['auth:sanctum'])->group(function () {
 
+    Route::get('/test-auth', function(){
+            return response()->json(["message" => "the user is authenticated"]);
+    });
+
+});
 
 Route::middleware([RoleMiddleware::class . ':admin'])->prefix('admin')->group(function () {
 
 //Only the routes that the admin have access
-
-
 });
+
+
 Route::get('/test-ai', [OpenRouterController::class, 'testAI']);
 
 Route::get('/ask', [WorkoutController::class, 'askHuggingFace']);

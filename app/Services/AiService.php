@@ -159,6 +159,7 @@ Important:
     
     public function trimRespounse($rawRespounse){
     
+      // dd($rawRespounse);
     $cleaned = trim($rawRespounse);
     $cleaned = preg_replace('/^```json|```$/m', '', $cleaned);
     $cleaned = str_replace(['"""', '```'], '', $cleaned); // remove triple quotes or stray backticks
