@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-
+use App\Notifications\VerifyApiEmail;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -34,6 +34,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'weight_kg',
         'user_type',
     ];
+
+    public function sendEmailVerificationNotification()
+{
+    $this->notify(new VerifyApiEmail());
+}
     
 
     /**
