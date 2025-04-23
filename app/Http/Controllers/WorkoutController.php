@@ -4,20 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Workout;
 use App\Services\AIService;
+use App\Events\WorkoutEvent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\ExerciseController;
-use Illuminate\Support\Facades\Log;
 
 
 class WorkoutController extends Controller
 {
     protected $aiService;
     protected $exerciseController;
+    public $user;
 
     public function __construct(AIService $aiService){
 
         $this->aiService = $aiService ;
+        $this->user = Auth::user();
 
         // $this->$exerciseController = $exerciseController;
     }
@@ -42,6 +46,7 @@ class WorkoutController extends Controller
             $workoutData = $this->aiService->getWorkoutPlan($prount);
     
             // Validate workout data structure
+            // dd($workoutData);
             if (!isset($workoutData['workout_number'])) {
                 Log::warning('Missing workout_number key from AI response', ['response' => $workoutData]);
                 return response()->json(['error' => 'Invalid workout structure from AI'], 422);
@@ -95,11 +100,10 @@ class WorkoutController extends Controller
     }
     public function storeWorkout($data, $exerciseData)
     {
-        // dd($data);
-    
+     
         try {
             $workout = new Workout();
-            $workout->user_id = 2; // Replace with auth()->id() when ready
+            $workout->user_id = $this->user->id;
             $workout->title = $data["title"];
             $workout->description = $data["description"];
             $workout->workout_day = $data["week_day"];
@@ -126,8 +130,10 @@ class WorkoutController extends Controller
     
             // Store Exercises
             $exerciseController->storeExercise($exerciseData, $workout->id);
+
+            $workoutWithExercises = Workout::with('exercises')->find($workout->id);
     
-            // Return success
+            event(new WorkoutEvent($workoutWithExercises));
             return response()->json([
                 'message' => 'Workout and exercises created successfully',
                 'workout_id' => $workout->id

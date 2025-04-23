@@ -16,8 +16,8 @@ use App\Http\Controllers\API\PostController;
 
 // Authentication Routes 
 Route::post('/register', [AuthController::class, 'register']);
-Route::post("/login",[AuthController:: class,  "login"]);
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post("/login",[AuthController::class,"login"]);
+Route::get('/logout', [AuthController::class,'logout'])->name('logout');
 Route::get('/verify-email/{id}', [AuthController::class, 'verifyEmail']);
 Route::post('/forget-password', [AuthController::class, 'forgetPassword']);
 // Route::get('/reset-password/{id}', [AuthController::class, 'resetPassword']);
@@ -27,12 +27,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/test-auth', function(){
             return response()->json(["message" => "the user is authenticated"]);
     });
+    Route::post('/generate-workout', [WorkoutController::class, 'generateWorkoutPlan']);
 
 });
 
 Route::middleware([RoleMiddleware::class . ':admin'])->prefix('admin')->group(function () {
 
-//Only the routes that the admin have access
 
 });
 Route::get('/hello', function (Request $request) {
@@ -44,7 +44,6 @@ Route::get('/test-ai', [OpenRouterController::class, 'testAI']);
 
 Route::get('/ask', [WorkoutController::class, 'askHuggingFace']);
 Route::get('/ask1', [WorkoutController::class, 'queryDeepSeek']);
-Route::post('/generate-workout', [WorkoutController::class, 'generateWorkoutPlan']);
 Route::get('/get-all-user-workout', [WorkoutController::class, 'getAllUserWorkouts']);
 Route::get('/test-broadcast', function () {
     event(new MessageSent('🔥 Hello from qa ka qa ska o pidh nane Laravel Reverb!'));

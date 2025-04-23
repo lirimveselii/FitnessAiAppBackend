@@ -121,6 +121,7 @@ class AIService
 
 #### For a weekly/multi-day plan:
 [
+\"workout_number\": ..., 
   {
     \"workout\": { ... same structure as above ... },
     \"exercises\": [ ... same structure as above ... ]
