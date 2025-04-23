@@ -150,8 +150,6 @@ class WorkoutController extends Controller
 
     public function testWebSocets(){
 
-
-
         event(new MessageSent('Hello from Laravel!'));
     }
 
