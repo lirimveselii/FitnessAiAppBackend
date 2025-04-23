@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\MessageSent;
 use App\Mail\VerifyEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -32,6 +33,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware([RoleMiddleware::class . ':admin'])->prefix('admin')->group(function () {
 
 //Only the routes that the admin have access
+
+});
+Route::get('/hello', function (Request $request) {
+    return response()->json(['message' => 'Hello,  World!'], 200);
 });
 
 
@@ -41,3 +46,8 @@ Route::get('/ask', [WorkoutController::class, 'askHuggingFace']);
 Route::get('/ask1', [WorkoutController::class, 'queryDeepSeek']);
 Route::post('/generate-workout', [WorkoutController::class, 'generateWorkoutPlan']);
 Route::get('/get-all-user-workout', [WorkoutController::class, 'getAllUserWorkouts']);
+Route::get('/test-broadcast', function () {
+    event(new MessageSent('🔥 Hello from qa ka qa ska o pidh nane Laravel Reverb!'));
+    return 'Broadcasted';
+});
+
