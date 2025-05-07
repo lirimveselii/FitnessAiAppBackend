@@ -17,14 +17,23 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\WorkoutController;
 
 
 
 class AuthController extends Controller
 {
+    public $workoutController;
+
+    public function __construct(){
+        $this->workoutController = new WorkoutController;
+
+    }
+
     public function register(Request $request)
     {
         try {
+            
 
             $validator = Validator::make($request->all(), [
                     "name" => "required",
@@ -56,8 +65,9 @@ class AuthController extends Controller
                 "height_cm" => $request->height_cm,
                 "weight_kg" => $request->weight_kg,
                 "user_type" => $request->user_type,
-            ]);            
-
+            ]);    
+            
+            
             Mail::to($request->email)->send(new VerifyEmail($user));
 
             Log::info("User registered successfully: " . $user->email , );

@@ -21,7 +21,7 @@ class WorkoutEvent
     public function __construct($workouts)
     {
         $this->workouts = $workouts;
-        dd($this->workouts);
+        
     }
 
     /**
