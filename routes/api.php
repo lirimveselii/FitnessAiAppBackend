@@ -1,26 +1,29 @@
 <?php
 
-use App\Events\MessageSent;
 use App\Mail\VerifyEmail;
+use App\Events\MessageSent;
+use App\Services\AiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OpenRouterController;
-use App\Http\Controllers\WorkoutController;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Controllers\WorkoutController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\OpenRouterController;
 
 
 
 
 // Authentication Routes 
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post("/login",[AuthController::class,"login"]);
 Route::get('/logout', [AuthController::class,'logout'])->name('logout');
 Route::get('/verify-email/{id}', [AuthController::class, 'verifyEmail']);
 Route::post('/forget-password', [AuthController::class, 'forgetPassword']);
 // Route::get('/reset-password/{id}', [AuthController::class, 'resetPassword']);
+Route::post('meta-ai', [AiService::class, 'askHuggingFace']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
