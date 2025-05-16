@@ -11,6 +11,8 @@ use App\Http\Controllers\WorkoutController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\OpenRouterController;
+use App\Http\Controllers\HomeController;
+
 
 
 
@@ -53,3 +55,4 @@ Route::get('/test-broadcast', function () {
     return 'Broadcasted';
 });
 
+Route::get('/test-meals', [HomeController::class, 'todaysMeals']);
