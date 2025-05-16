@@ -30,16 +30,18 @@ class WorkoutController extends Controller
 
         // return Workout::where('user_id',$request->user()->id);
         $workouts = Workout::with('exercises')
-        ->where('user_id', 2)
+        ->where('user_id', 1)
         ->get();
+        // dd($workouts);
 
 
-         return  response()->json( ["user_workout" => $workouts ], 200);
+         return  response()->json( [$workouts], 200);
 
     }
 
     public function generateWorkoutPlan(Request $request)
     {
+        // dd("test");
         try {
             // Step 1: Get input data
             $data = $request->only([
@@ -65,6 +67,7 @@ class WorkoutController extends Controller
                 Log::warning('Invalid response from AIService', ['response' => $workoutDataList]);
                 return response()->json(['error' => 'Invalid workout plan from AI'], 422);
             }
+            // dd($workoutDataList);
     
             $savedWorkouts = [];
     
@@ -103,12 +106,13 @@ class WorkoutController extends Controller
     
     public function storeWorkout(array $data, array $exerciseData): Workout
     {
+        // dd($data['workout_day']);
         try {
             $workout = new Workout([
-                'user_id' => $this->user->id,
+                'user_id' => 1,//$this->user->id
                 'title' => $data['title'],
                 'description' => $data['description'],
-                'workout_day' => $data['week_day'],
+                'workout_day' => $data['workout_day'],
                 'duration_min' => $data['duration_min'],
                 'intensity_level' => $data['intensity_level'],
                 'workout_type' => $data['workout_type'],

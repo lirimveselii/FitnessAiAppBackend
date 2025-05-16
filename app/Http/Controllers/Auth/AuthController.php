@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Auth;
 
 use Auth;
 use Carbon\Carbon;
@@ -26,7 +26,8 @@ class AuthController extends Controller
     public $workoutController;
 
     public function __construct(){
-        $this->workoutController = new WorkoutController;
+
+        // $this->workoutController = new WorkoutController;
 
     }
 

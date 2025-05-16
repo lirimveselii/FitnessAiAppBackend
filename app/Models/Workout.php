@@ -15,6 +15,7 @@ class Workout extends Model
         'user_id',
         'title',
         'description',
+        'workout_day',
         'duration_min',
         'intensity_level',
         'workout_type',

@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Controllers\WorkoutController;
-use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\PostController;
 use App\Http\Controllers\OpenRouterController;
 
 
@@ -30,9 +30,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/test-auth', function(){
             return response()->json(["message" => "the user is authenticated"]);
     });
-    Route::post('/generate-workout', [WorkoutController::class, 'generateWorkoutPlan']);
-
+    
 });
+Route::post('/generate-workout', [WorkoutController::class, 'generateWorkoutPlan']);
+Route::get('/user-workouts', [WorkoutController::class, 'getAllUserWorkouts']);
+
+
 
 Route::middleware([RoleMiddleware::class . ':admin'])->prefix('admin')->group(function () {
 
