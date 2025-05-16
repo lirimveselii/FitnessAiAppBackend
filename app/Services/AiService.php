@@ -82,8 +82,13 @@ class AIService
 
 
     
-    public function getWorkoutPlan(  $userType,$fitnessGoal,$workoutDaysPerWeek,$fitnessLevel,$focusArea,$availableEquipment,$workoutTypePreference,$targetWeightGoal,$injuriesOrLimitations,$workoutTimePerSession,$structuredOrFlexiblePlan,$includeNutritionPlan)
+    public function getWorkoutPlan($userType,$fitnessGoal,$workoutDaysPerWeek,$fitnessLevel,$focusArea,$availableEquipment,$workoutTypePreference,$targetWeightGoal,$injuriesOrLimitations,$workoutTimePerSession,$structuredOrFlexiblePlan,$includeNutritionPlan)
     {
+
+        $focusAreaString = implode(', ', $focusArea);
+        // $availableEquipmentString = implode(', ', $availableEquipment); // in review to see if it is neaded
+        $injuriesOrLimitationsString = implode(', ', $injuriesOrLimitations);
+
       
         $apiKey = env('TOGETEHR_API_KEY'); 
     
@@ -104,14 +109,15 @@ class AIService
                 \"fitness_goal\": \"$fitnessGoal\",
                 \"workout_days_per_week\": $workoutDaysPerWeek,
                 \"fitness_level\": \"$fitnessLevel\",
-                \"focus_area\": \"$focusArea\",
+                \"focus_area\": \"$focusAreaString\",
                 \"workout_type_preference\": \"$workoutTypePreference\",
                 \"target_weight_goal\": $targetWeightGoal,
-                \"injuries_or_limitations\": \"$injuriesOrLimitations\",
+                \"injuries_or_limitations\": \"$injuriesOrLimitationsString\",
                 \"workout_time_per_session\": $workoutTimePerSession,
                 \"structured_or_flexible_plan\": \"$structuredOrFlexiblePlan\",
                 \"include_nutrition_plan\": \"$includeNutritionPlan\"
             }
+            The field 'workout_day' is MANDATORY in every workout. It MUST be filled with a valid weekday like 'Monday', 'Tuesday', etc. DO NOT OMIT IT.
 
             Please create a workout plan that includes **4-5 exercises** based on the user's fitness level:
             - For **beginner**: Include simpler exercises like bodyweight exercises or light weights.
@@ -122,7 +128,7 @@ class AIService
             
             - If the user wants a single workout session, return **just one workout object** with its exercises.
             - If the user wants a plan for multiple days (e.g., a week), return an **array of workout plans**, one per day.
-            - Every workout **must include** the \"week_day\" field to specify on which day it is planned (e.g., \"Monday\", \"Tuesday\", etc.).
+            - Every workout **must include** the \"workout_day\" field to specify on which day it is planned (e.g., \"Monday\", \"Tuesday\", etc.). it is mendatory
             - The structure and field names must always be exactly the same, with all fields filled.
             - All fields in both the \"workout\" and \"exercises\" sections are mandatory.
             - The output must be **valid JSON** with no additional characters, comments, explanations, or markdown formatting — only clean, parsable JSON compatible with json_decode.
@@ -136,10 +142,10 @@ class AIService
                 \"workout\": {
                     \"title\": \"...\",
                     \"description\": \"...\",
-                    \"week_day\": \"Monday\",
+                    \"workout_day\": \"...\",The field \"workout_day\" is mandatory and used for planning the workout on specific days like \"Monday\", \"Tuesday\", etc.
                     \"duration_min\": ...,
                     \"intensity_level\": \"low | moderate | high\",
-                    \"workout_type\": \"...\",
+                    \"workout_type\": \"Monday | ...\",
                     \"calories_burned\": ...,
                     \"target_muscle_groups\": \"...\",
                     \"notes\": \"...\",
@@ -178,7 +184,7 @@ class AIService
             }
 
             Important:
-            - The field \"week_day\" is mandatory and used for planning the workout on specific days like \"Monday\", \"Tuesday\", etc.
+            - The field \"workout_day\" is mandatory and used for planning the workout on specific days like \"Monday\", \"Tuesday\", etc.
             "
 
 
