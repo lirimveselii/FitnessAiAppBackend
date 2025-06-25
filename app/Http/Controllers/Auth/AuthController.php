@@ -45,13 +45,13 @@ class AuthController extends Controller
                     "gender" => "required|in:male,female,other",
                     "height_cm" => "required|numeric",
                     "weight_kg" => "required|numeric",
-                    "user_type" => "required"
+                    "user_type" => "required",
                 ]);
     
             if ($validator->fails()) {
                 Log::warning("Validation failed during registration: " . implode(", ", $validator->errors()->all()));
                 return response()->json([
-                    "status" => 0,
+                    "status" => 422,
                     "message" => "Validation errors.",
                     "data" => $validator->errors()->all()
                 ]);

@@ -59,3 +59,4 @@ Route::get('/test-broadcast', function () {
 });
 
 Route::get('/test-meals', [HomeController::class, 'todaysMeals']);
+Route::get('/google-ai', [AiService::class, 'testGoogleAi']);

@@ -1,7 +1,11 @@
 <?php 
 
 namespace App\Services;
+use App\Services\AiClient;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\File;
+use App\Utils\AiResponseParser;
+
 
 
 class AIService
@@ -82,12 +86,21 @@ class AIService
 
 
     
-    public function getWorkoutPlan($userType,$fitnessGoal,$workoutDaysPerWeek,$fitnessLevel,$focusArea,$availableEquipment,$workoutTypePreference,$targetWeightGoal,$injuriesOrLimitations,$workoutTimePerSession,$structuredOrFlexiblePlan,$includeNutritionPlan)
+    // public function getWorkoutPlan($userType,$fitnessGoal,$workoutDaysPerWeek,$fitnessLevel,$focusArea,$availableEquipment,$workoutTypePreference,$targetWeightGoal,$injuriesOrLimitations,$workoutTimePerSession,$structuredOrFlexiblePlan,$includeNutritionPlan)
+   public function getWorkoutPlan(array $inputs): array
     {
+        $prompt =  $this->buildWorkoutPrompt($inputs);
+        $rawResponse = app(AiClient::class)->send($prompt);
+        // dd($rawResponse);
+    //   dd("resrt");
+      return AiResponseParser::clean($rawResponse);
+    //   dd($finalres );
 
-        $focusAreaString = implode(', ', $focusArea);
-        // $availableEquipmentString = implode(', ', $availableEquipment); // in review to see if it is neaded
-        $injuriesOrLimitationsString = implode(', ', $injuriesOrLimitations);
+
+        $focusAreaString = is_array($focusArea) ? implode(', ', $focusArea) : $focusArea;
+        // $availableEquipmentString = is_array($availableEquipment) ? implode(', ', $availableEquipment) : $availableEquipment;
+        $injuriesOrLimitationsString = is_array($injuriesOrLimitations) ? implode(', ', $injuriesOrLimitations) : $injuriesOrLimitations;
+
 
       
         $apiKey = env('TOGETEHR_API_KEY'); 
@@ -102,90 +115,88 @@ class AIService
             'messages' => [
                             [
                                 "role" => "user",
-                                "content" => "Create a personalized fitness workout plan based on the following user input:
-            
-            {
-                \"user_type\": \"$userType\",
-                \"fitness_goal\": \"$fitnessGoal\",
-                \"workout_days_per_week\": $workoutDaysPerWeek,
-                \"fitness_level\": \"$fitnessLevel\",
-                \"focus_area\": \"$focusAreaString\",
-                \"workout_type_preference\": \"$workoutTypePreference\",
-                \"target_weight_goal\": $targetWeightGoal,
-                \"injuries_or_limitations\": \"$injuriesOrLimitationsString\",
-                \"workout_time_per_session\": $workoutTimePerSession,
-                \"structured_or_flexible_plan\": \"$structuredOrFlexiblePlan\",
-                \"include_nutrition_plan\": \"$includeNutritionPlan\"
-            }
-            The field 'workout_day' is MANDATORY in every workout. It MUST be filled with a valid weekday like 'Monday', 'Tuesday', etc. DO NOT OMIT IT.
-
-            Please create a workout plan that includes **4-5 exercises** based on the user's fitness level:
-            - For **beginner**: Include simpler exercises like bodyweight exercises or light weights.
-            - For **intermediate**: Add moderate-intensity exercises with weights, more sets/reps.
-            - For **advanced**: Add complex movements and exercises that require higher intensity, longer duration, and more weight.
-            
-            The number of exercises should align with the user's fitness level.
-            
-            - If the user wants a single workout session, return **just one workout object** with its exercises.
-            - If the user wants a plan for multiple days (e.g., a week), return an **array of workout plans**, one per day.
-            - Every workout **must include** the \"workout_day\" field to specify on which day it is planned (e.g., \"Monday\", \"Tuesday\", etc.). it is mendatory
-            - The structure and field names must always be exactly the same, with all fields filled.
-            - All fields in both the \"workout\" and \"exercises\" sections are mandatory.
-            - The output must be **valid JSON** with no additional characters, comments, explanations, or markdown formatting — only clean, parsable JSON compatible with json_decode.
-            
-            --- 
-
-            ### JSON FORMAT:
-
-            #### For a single workout:
-            {
-                \"workout\": {
-                    \"title\": \"...\",
-                    \"description\": \"...\",
-                    \"workout_day\": \"...\",The field \"workout_day\" is mandatory and used for planning the workout on specific days like \"Monday\", \"Tuesday\", etc.
-                    \"duration_min\": ...,
-                    \"intensity_level\": \"low | moderate | high\",
-                    \"workout_type\": \"Monday | ...\",
-                    \"calories_burned\": ...,
-                    \"target_muscle_groups\": \"...\",
-                    \"notes\": \"...\",
-                    \"status\": \"planned | in_progress | completed\",
-                    \"workout_date\": \"YYYY-MM-DD\",
-                    \"difficulty_level\": \"beginner | intermediate | advanced\",
-                    \"progress_results\": \"...\",
-                    \"tags\": \"...\",
-                    \"rating\": ...
-                },
-                \"exercises\": [
-                    {
-                        \"exercise_name\": \"...\",
-                        \"sets\": ...,
-                        \"reps\": ...,
-                        \"rest_time\": ...,
-                        \"category\": \"...\",
-                        \"muscle_group\": \"...\",
-                        \"description\": \"...\",
-                        \"video_url\": \"...\",
-                        \"difficulty_level\": \"...\",
-                        \"calories_burned\": ...,
-                        \"duration_seconds\": ...,
-                        \"intensity\": \"...\"
-                    }
-                ]
-            }
-
-            #### For a weekly/multi-day plan:
-            {
-                {
-                    \"workout\": { ... same structure as above ... },
-                    \"exercises\": [ ... same structure as above ... ]
-                },
-                ...
-            }
-
-            Important:
-            - The field \"workout_day\" is mandatory and used for planning the workout on specific days like \"Monday\", \"Tuesday\", etc.
-            "
+                                "content" => "Create a personalized fitness workout plan based on the following user input:\\n\\n\
+{\\n\
+  \\\"user_type\\\": \\\"$userType\\\",\\n\
+  \\\"fitness_goal\\\": \\\"$fitnessGoal\\\",\\n\
+  \\\"workout_days_per_week\\\": $workoutDaysPerWeek,\\n\
+  \\\"fitness_level\\\": \\\"$fitnessLevel\\\",\\n\
+  \\\"focus_area\\\": \\\"$focusAreaString\\\",\\n\
+  \\\"workout_type_preference\\\": \\\"$workoutTypePreference\\\",\\n\
+  \\\"target_weight_goal\\\": $targetWeightGoal,\\n\
+  \\\"injuries_or_limitations\\\": \\\"$injuriesOrLimitationsString\\\",\\n\
+  \\\"workout_time_per_session\\\": $workoutTimePerSession,\\n\
+  \\\"structured_or_flexible_plan\\\": \\\"$structuredOrFlexiblePlan\\\",\\n\
+  \\\"include_nutrition_plan\\\": \\\"$includeNutritionPlan\\\"\\n\
+}\\n\\n\
+Requirements:\\n\\n\
+1. The output must be valid JSON with **no extra comments or explanations** — only clean, parsable JSON.\\n\\n\
+2. The plan should include either:\\n\
+   - A **single workout object** if the user wants 1 workout session per week, or\\n\
+   - An **array of workout objects**, one for each workout day, if the user wants multiple days per week.\\n\\n\
+3. **Muscle Group Splitting** (VERY IMPORTANT for multi-day plans):\\n\
+   - For multiple days, split muscle groups scientifically, e.g.:\\n\
+     - Day 1: Upper Body Push (Chest, Shoulders, Triceps)\\n\
+     - Day 2: Lower Body (Quads, Hamstrings, Glutes, Calves)\\n\
+     - Day 3: Upper Body Pull (Back, Biceps)\\n\
+     - Or use a proven full-body split spread over the week — DO NOT repeat the same full-body workout every day.\\n\\n\
+4. Each workout MUST include the field \\\"workout_day\\\" with a valid weekday name (\\\"Monday\\\", \\\"Tuesday\\\", etc.).\\n\\n\
+5. Include **as many exercises per workout based on the user goals**:\\n\
+   - For **beginner**: simple exercises, bodyweight/light weights, fewer sets/reps.\\n\
+   - For **intermediate**: moderate intensity, weights, more sets/reps.\\n\
+   - For **advanced**: complex/high-intensity exercises, more volume.\\n\\n\
+6. All fields listed below are MANDATORY and must be filled for both workouts and exercises.\\n\\n\
+7. Use these exact field names and structure for each workout and exercises:\\n\\n\
+**Workout object fields:**\\n\
+- title (string)\\n\
+- description (string)\\n\
+- workout_day (string, mandatory weekday)\\n\
+- duration_min (integer)\\n\
+- intensity_level (string: \\\"low\\\", \\\"moderate\\\", or \\\"high\\\")\\n\
+- workout_type (string)\\n\
+- calories_burned (number)\\n\
+- target_muscle_groups (string)\\n\
+- notes (string)\\n\
+- status (string: \\\"planned\\\", \\\"in_progress\\\", or \\\"completed\\\")\\n\
+- workout_date (string, format \\\"YYYY-MM-DD\\\")\\n\
+- difficulty_level (string: \\\"beginner\\\", \\\"intermediate\\\", or \\\"advanced\\\")\\n\
+- progress_results (string)\\n\
+- tags (string)\\n\
+- rating (integer)\\n\\n\
+**Exercise object fields:**\\n\
+- exercise_name (string)\\n\
+- sets (integer)\\n\
+- reps (integer)\\n\
+- rest_time (integer, seconds)\\n\
+- category (string)\\n\
+- muscle_group (string)\\n\
+- description (string)\\n\
+- video_url (string)\\n\
+- difficulty_level (string)\\n\
+- calories_burned (number)\\n\
+- duration_seconds (integer)\\n\
+- intensity (string: \\\"low\\\", \\\"moderate\\\", or \\\"high\\\")\\n\\n\
+---\\n\\n\
+### Example Output Formats:\\n\\n\
+#### Single workout (1 day):\\n\
+{\\n\
+  \\\"workout\\\": { ... },\\n\
+  \\\"exercises\\\": [ ... ]\\n\
+}\\n\\n\
+#### Multiple workouts (multi-day):\\n\
+[\\n\
+  {\\n\
+    \\\"workout\\\": { ... },\\n\
+    \\\"exercises\\\": [ ... ]\\n\
+  },\\n\
+  {\\n\
+    \\\"workout\\\": { ... },\\n\
+    \\\"exercises\\\": [ ... ]\\n\
+  },\\n\
+  ...\\n\
+]\\n\\n\
+---\\n\\n\
+Generate the workout plan strictly following all the above rules."
 
 
                             ]
@@ -245,6 +256,50 @@ class AIService
     return  $aiData;
     
     }
+
+
+    public function testGoogleAi(){
+
+
+$response = Http::withHeaders([
+    'Content-Type' => 'application/json',
+])->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyBAsr4w5H5RhyEIwDmPbeiKuV7ep6D28S4', [
+    'contents' => [
+        [
+            'parts' => [
+                [
+                    'text' => 'what is the capital of albania'
+                ]
+            ]
+        ]
+    ]
+]);
+
+$data = $response->json();
+
+dd($data); // dumps the response
+
+    }
+    public function buildWorkoutPrompt(array $params): string
+{
+    $template = File::get(resource_path('/prompts/workout_plan.txs'));
+
+    $replacements = [
+        '{{user_type}}' => $params['user_type'],
+        '{{fitness_goal}}' => $params['fitness_goal'],
+        '{{workout_days_per_week}}' => $params['workout_days_per_week'],
+        '{{fitness_level}}' => $params['fitness_level'],
+        '{{focus_area}}' => is_array($params['focus_area']) ? implode(', ', $params['focus_area']) : $params['focus_area'],
+        '{{workout_type_preference}}' => $params['workout_type_preference'],
+        '{{target_weight_goal}}' => $params['target_weight_goal'],
+        '{{injuries_or_limitations}}' => is_array($params['injuries_or_limitations']) ? implode(', ', $params['injuries_or_limitations']) : $params['injuries_or_limitations'],
+        '{{workout_time_per_session}}' => $params['workout_time_per_session'],
+        '{{structured_or_flexible_plan}}' => $params['structured_or_flexible_plan'],
+        '{{include_nutrition_plan}}' => $params['include_nutrition_plan'],
+    ];
+
+    return str_replace(array_keys($replacements), array_values($replacements), $template);
+}
     
 
 }

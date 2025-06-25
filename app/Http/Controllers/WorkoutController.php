@@ -41,7 +41,6 @@ class WorkoutController extends Controller
 
     public function generateWorkoutPlan(Request $request)
     {
-        // dd("test");
         try {
             // Step 1: Get input data
             $data = $request->only([
@@ -61,7 +60,9 @@ class WorkoutController extends Controller
     
             // Step 2: Generate AI-based workout data
             $aiService = new AIService();
-            $workoutDataList = $aiService->getWorkoutPlan(...array_values($data));
+            $workoutDataList = $aiService->getWorkoutPlan($data);
+
+            // dd($workoutDataList);
     
             if (!is_array($workoutDataList) || empty($workoutDataList)) {
                 Log::warning('Invalid response from AIService', ['response' => $workoutDataList]);
@@ -73,6 +74,8 @@ class WorkoutController extends Controller
     
             // Step 3: Loop and store each workout
             foreach ($workoutDataList as $index => $item) {
+
+                // dd($item);
                 try {
                     $workout = $this->storeWorkout($item['workout'], $item['exercises']);
                     event(new WorkoutEvent($workout));

@@ -1,0 +1,99 @@
+Create a personalized fitness workout plan based on the following user input:
+
+{
+  "user_type": "{{user_type}}",
+  "fitness_goal": "{{fitness_goal}}",
+  "workout_days_per_week": {{workout_days_per_week}},
+  "fitness_level": "{{fitness_level}}",
+  "focus_area": "{{focus_area}}",
+  "workout_type_preference": "{{workout_type_preference}}",
+  "target_weight_goal": {{target_weight_goal}},
+  "injuries_or_limitations": "{{injuries_or_limitations}}",
+  "workout_time_per_session": {{workout_time_per_session}},
+  "structured_or_flexible_plan": "{{structured_or_flexible_plan}}",
+  "include_nutrition_plan": "{{include_nutrition_plan}}"
+}
+
+Requirements:
+
+1. The output must be valid JSON with **no extra comments or explanations** — only clean, parsable JSON.
+
+2. The plan should include either:
+   - A **single workout object** if the user wants 1 workout session per week, or
+   - An **array of workout objects**, one for each workout day, if the user wants multiple days per week.
+
+3. **Muscle Group Splitting** (VERY IMPORTANT for multi-day plans):
+   - For multiple days, split muscle groups scientifically, e.g.:
+     - Day 1: Upper Body Push (Chest, Shoulders, Triceps)
+     - Day 2: Lower Body (Quads, Hamstrings, Glutes, Calves)
+     - Day 3: Upper Body Pull (Back, Biceps)
+     - Or use a proven full-body split spread over the week — DO NOT repeat the same full-body workout every day.
+
+4. Each workout MUST include the field "workout_day" with a valid weekday name ("Monday", "Tuesday", etc.).
+
+5. Include **as many exercises per workout based on the user goals**:
+   - For **beginner**: simple exercises, bodyweight/light weights, fewer sets/reps.
+   - For **intermediate**: moderate intensity, weights, more sets/reps.
+   - For **advanced**: complex/high-intensity exercises, more volume.
+
+6. All fields listed below are MANDATORY and must be filled for both workouts and exercises.
+
+7. Use these exact field names and structure for each workout and exercises:
+
+**Workout object fields:**
+- title (string)
+- description (string)
+- workout_day (string, mandatory weekday)
+- duration_min (integer)
+- intensity_level (string: "low", "moderate", or "high")
+- workout_type (string)
+- calories_burned (number)
+- target_muscle_groups (string)
+- notes (string)
+- status (string: "planned", "in_progress", or "completed")
+- workout_date (string, format "YYYY-MM-DD")
+- difficulty_level (string: "beginner", "intermediate", or "advanced")
+- progress_results (string)
+- tags (string)
+- rating (integer)
+
+**Exercise object fields:**
+- exercise_name (string)
+- sets (integer)
+- reps (integer)
+- rest_time (integer, seconds)
+- category (string)
+- muscle_group (string)
+- description (string)
+- video_url (string)
+- difficulty_level (string)
+- calories_burned (number)
+- duration_seconds (integer)
+- intensity (string: "low", "moderate", or "high")
+
+---
+
+### Example Output Formats:
+
+#### Single workout (1 day):
+{
+  "workout": { ... },
+  "exercises": [ ... ]
+}
+
+#### Multiple workouts (multi-day):
+[
+  {
+    "workout": { ... },
+    "exercises": [ ... ]
+  },
+  {
+    "workout": { ... },
+    "exercises": [ ... ]
+  },
+  ...
+]
+
+---
+
+Generate the workout plan strictly following all the above rules.
