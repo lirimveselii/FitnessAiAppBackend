@@ -1,0 +1,34 @@
+Create a personalized weekly diet plan based on the following user input:
+
+{
+  "diet_goal": "{{diet_goal}}",
+  "dietary_preference": "{{dietary_preference}}",
+  "allergies": "{{allergies}}",
+  "disliked_foods": "{{disliked_foods}}",
+  "meals_per_day": {{meals_per_day}},
+  "daily_budget": {{daily_budget}},
+  "region": "{{region}}",
+  "cooking_style": "{{cooking_style}}",
+  "prep_time_per_meal": "{{prep_time_per_meal}}",
+  "track_macros": "{{track_macros}}"
+}
+
+Requirements:
+
+1. The output must be valid JSON with **no explanations or comments**.
+2. Provide a weekly meal plan with daily meal breakdown (breakfast, lunch, dinner, snacks).
+3. Include nutritional info for each meal (calories, protein, carbs, fat).
+4. Match meals to budget and local ingredients based on the region.
+5. Suggest simple preparation methods that fit the user's cooking time and style.
+6. Avoid any allergens or disliked foods.
+
+Return a structured JSON array with 7 objects (one per day), each containing:
+
+- `day` (string: Monday, ..., Sunday)
+- `meals` (array of objects):
+   - `type` (e.g., breakfast, lunch, dinner, snack)
+   - `meal_name`
+   - `ingredients` (array of strings)
+   - `calories`
+   - `macros`: { protein, carbs, fat }
+   - `prep_instructions`

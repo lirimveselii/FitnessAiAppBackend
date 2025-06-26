@@ -19,6 +19,14 @@ class AIService
 
     }
 
+    public function getDietPlan(array $inputs){
+
+        $prompt = $this->buildDietePrompt($inputs);
+        $rawResponse = app(AiClient::class)->send($prompt);
+        return AiResponseParser::clean($rawResponse);
+
+    }
+
     public function buildWorkoutPrompt(array $params): string
 {
     $template = File::get(resource_path('/prompts/workout_plan.txs'));
@@ -38,6 +46,27 @@ class AIService
     ];
 
     return str_replace(array_keys($replacements), array_values($replacements), $template);
+}
+
+public function buildDietePrompt($data) 
+{
+    $template = File::get(resource_path('prompts/diet_plan.txs'));
+
+
+       $replacements = [
+            '{{diet_goal}}' => $data['diet_goal'] ?? '',
+            '{{dietary_preference}}' => $data['dietary_preference'] ?? '',
+            '{{allergies}}' => is_array($data['allergies']) ? implode(', ', $data['allergies']) : $data['allergies'],
+            '{{disliked_foods}}' => $data['disliked_foods'] ?? '',
+            '{{meals_per_day}}' => $data['meals_per_day'] ?? 3,
+            '{{daily_budget}}' => $data['daily_budget'] ?? 10,
+            '{{region}}' => $data['region'] ?? '',
+            '{{cooking_style}}' => $data['cooking_style'] ?? 'mixed',
+            '{{prep_time_per_meal}}' => $data['prep_time_per_meal'] ?? '15–30 minutes',
+            '{{track_macros}}' => $data['track_macros'] ?? 'no',
+        ];
+
+        return str_replace(array_keys($replacements), array_values($replacements), $template);
 }
     
 
