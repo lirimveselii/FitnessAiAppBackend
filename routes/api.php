@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Controllers\WorkoutController;
+use App\Http\Controllers\FoodController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PostController;
 use App\Http\Controllers\OpenRouterController;
@@ -36,6 +37,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 Route::post('/generate-workout', [WorkoutController::class, 'generateWorkoutPlan']);
 Route::get('/user-workouts', [WorkoutController::class, 'getAllUserWorkouts']);
+Route::post('/generate-diet', [FoodController::class, 'generateDiet']);
 
 
 
@@ -57,6 +59,7 @@ Route::get('/test-broadcast', function () {
     event(new MessageSent('🔥 Hello from qa ka qa ska o pidh nane Laravel Reverb!'));
     return 'Broadcasted';
 });
+
 
 Route::get('/test-meals', [HomeController::class, 'todaysMeals']);
 Route::get('/google-ai', [AiService::class, 'testGoogleAi']);
