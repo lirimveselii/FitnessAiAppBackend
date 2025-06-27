@@ -158,5 +158,6 @@ class WorkoutController extends Controller
         event(new MessageSent('Hello from Laravel!'));
     }
 
+    
 
 }
