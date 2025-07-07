@@ -21,8 +21,25 @@ class Exercise extends Model
     ];
     /** @use HasFactory<\Database\Factories\ExerciseFactory> */
     use HasFactory;
-    public function workouts()
-    {
-        return $this->belongsTo(Workout::class);
-    }
+  public function workouts()
+{
+    return $this->belongsToMany(Workout::class, 'exercise_workout')
+                ->withPivot([
+                    'sets',
+                    'reps',
+                    'rest_seconds',
+                    'duration_seconds',
+                    'order',
+                    'notes'
+                ])
+                ->withTimestamps();
+
+                
+}
+
+public function aliases()
+{
+    return $this->hasMany(ExerciseAlias::class);
+}
+
 }

@@ -61,16 +61,9 @@ Requirements:
 - exercise_name (string)
 - sets (integer)
 - reps (integer)
-- rest_time (integer, seconds)
-- category (string)
-- muscle_group (string)
-- description (string)
-- video_url (string)
-- difficulty_level (string)
-- calories_burned (number)
-- duration_seconds (integer)
-- intensity (string: "low", "moderate", or "high")
-
+- rest_seconds(integer) for how many seconds should the user rest afret the exercise
+- normalized_name(string) The lowercase version of the insted of spaces use _ and make all in singular not plural  
+- exercise_id: (integer)
 ---
 
 ### Example Output Formats:
