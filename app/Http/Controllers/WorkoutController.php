@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Workout;
 use App\Services\AIService;
+use App\Services\AIWorkoutStorageService;
 use App\Events\WorkoutEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -29,9 +30,11 @@ class WorkoutController extends Controller
     public function getAllUserWorkouts(Request $request){
 
         // return Workout::where('user_id',$request->user()->id);
-        $workouts = Workout::with('exercises')
-        ->where('user_id', 1)
-        ->get();
+                $workouts = Workout::with(['exercises' => function ($query) {
+                $query->orderBy('pivot_order'); // or manually later
+            }])
+            ->where('user_id', 1) // or ->where('user_id', 1)
+            ->get();
         // dd($workouts);
 
 
@@ -58,40 +61,13 @@ class WorkoutController extends Controller
                 'include_nutrition_plan',
             ]);
     
-            // Step 2: Generate AI-based workout data
             $aiService = new AIService();
             $workoutDataList = $aiService->getWorkoutPlan($data);
 
-            // dd($workoutDataList);
-    
-            if (!is_array($workoutDataList) || empty($workoutDataList)) {
-                Log::warning('Invalid response from AIService', ['response' => $workoutDataList]);
-                return response()->json(['error' => 'Invalid workout plan from AI'], 422);
-            }
-            // dd($workoutDataList);
-    
-            $savedWorkouts = [];
-    
-            // Step 3: Loop and store each workout
-            foreach ($workoutDataList as $index => $item) {
-
-                // dd($item);
-                try {
-                    $workout = $this->storeWorkout($item['workout'], $item['exercises']);
-                    event(new WorkoutEvent($workout));
-                    $savedWorkouts[] = $workout;
-                } catch (\Throwable $e) {
-                    Log::error("Error storing workout #$index", [
-                        'error' => $e->getMessage(),
-                        'workout_data' => $item['workout'],
-                    ]);
-                    // Continue saving others; optionally collect errors too
-                }
-            }
+            $workout = app(AIWorkoutStorageService::class)->store($workoutDataList); // ... auth()->user() when i put the root to the authed groop i will add the 
     
             return response()->json([
-                'message' => 'Workout plan generated and stored successfully',
-                'workouts' => $savedWorkouts,
+                'message' => 'Workout plan generated and stored successfully'
             ], 201);
     
         } catch (\Throwable $e) {
@@ -107,51 +83,139 @@ class WorkoutController extends Controller
         }
     }
     
-    public function storeWorkout(array $data, array $exerciseData): Workout
-    {
-        // dd($data['workout_day']);
-        try {
-            $workout = new Workout([
-                'user_id' => 1,//$this->user->id
-                'title' => $data['title'],
-                'description' => $data['description'],
-                'workout_day' => $data['workout_day'],
-                'duration_min' => $data['duration_min'],
-                'intensity_level' => $data['intensity_level'],
-                'workout_type' => $data['workout_type'],
-                'calories_burned' => $data['calories_burned'],
-                'target_muscle_groups' => $data['target_muscle_groups'],
-                'notes' => $data['notes'] ?? null,
-                'status' => $data['status'],
-                'workout_date' => $data['workout_date'],
-                'difficulty_level' => $data['difficulty_level'],
-                'progress_results' => $data['progress_results'] ?? null,
-                'tags' => $data['tags'],
-                'rating' => $data['rating'],
-            ]);
-    
-            $workout->save();
-    
-            // Log workout success
-            Log::info('Workout saved', ['workout_id' => $workout->id]);
-    
-            // Store exercises
-            $exerciseController = app()->make(ExerciseController::class);
-            $exerciseController->storeExercise($exerciseData, $workout->id);
-    
-            // Load with exercises
-            return Workout::with('exercises')->find($workout->id);
-    
-        } catch (\Throwable $e) {
-            Log::error('Workout creation failed', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-    
-            throw $e; // Let generateWorkoutPlan handle it
-        }
+    public function storeCustomWorkout(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'workout_day' => 'nullable|string|max:255',
+        'duration_min' => 'nullable|integer|min:1',
+        'exercises' => 'required|array|min:1',
+        'exercises.*.id' => 'required|exists:exercises,id',
+        'exercises.*.sets' => 'nullable|integer|min:1',
+        'exercises.*.reps' => 'nullable|integer|min:1',
+        'exercises.*.order' => 'nullable|integer|min:1',
+    ]);
+
+    try {
+        $workout = Workout::create([
+            'user_id' => auth()->id() ?? 1, // Replace `1` with actual auth when ready
+            'title' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'workout_day' => $validated['workout_day'] ?? null,
+            'duration_min' => $validated['duration_min'] ?? null,
+        ]);
+
+        $exerciseData = collect($validated['exercises'])->mapWithKeys(function ($exercise) {
+            return [
+                $exercise['id'] => [
+                    'sets' => $exercise['sets'] ?? null,
+                    'reps' => $exercise['reps'] ?? null,
+                    'order' => $exercise['order'] ?? null,
+                ]
+            ];
+        })->toArray();
+
+        $workout->exercises()->attach($exerciseData);
+
+        return response()->json([
+            'message' => 'Workout created successfully.',
+            'workout' => $workout->load('exercises'),
+        ]);
+
+    } catch (\Throwable $e) {
+        Log::error('Workout creation failed', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'request_data' => $request->all(),
+        ]);
+
+        return response()->json([
+            'message' => 'Something went wrong while creating the workout.',
+            'error' => $e->getMessage(),
+        ], 500);
     }
-    
+}
+
+
+public function updateWorkout(Request $request, Workout $workout)
+{
+    try {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'workout_day' => 'nullable|string|max:255',
+            'duration_min' => 'nullable|integer|min:1',
+            'exercises' => 'required|array|min:1',
+            'exercises.*.id' => 'required|exists:exercises,id',
+            'exercises.*.sets' => 'nullable|integer|min:1',
+            'exercises.*.reps' => 'nullable|integer|min:1',
+            'exercises.*.order' => 'nullable|integer|min:1',
+        ]);
+
+        $workout->update([
+            'title' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'workout_day' => $validated['workout_day'] ?? null,
+            'duration_min' => $validated['duration_min'] ?? null,
+        ]);
+
+        $exerciseData = collect($validated['exercises'])->mapWithKeys(function ($exercise) {
+            return [
+                $exercise['id'] => [
+                    'sets' => $exercise['sets'] ?? null,
+                    'reps' => $exercise['reps'] ?? null,
+                    'order' => $exercise['order'] ?? null,
+                ]
+            ];
+        })->toArray();
+
+        $workout->exercises()->sync($exerciseData);
+
+        return response()->json([
+            'message' => 'Workout updated successfully.',
+            'workout' => $workout->load('exercises'),
+        ]);
+
+    } catch (\Throwable $e) {
+        Log::error('Workout update failed', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'workout_id' => $workout->id,
+            'request_data' => $request->all(),
+        ]);
+
+        return response()->json([
+            'message' => 'Something went wrong while updating the workout.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+public function deleteWorkout(Workout $workout)
+{
+    try {
+        $workout->exercises()->detach();
+
+        $workout->delete();
+
+        return response()->json([
+            'message' => 'Workout deleted successfully.'
+        ]);
+
+    } catch (\Throwable $e) {
+        Log::error('Workout deletion failed', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'workout_id' => $workout->id,
+        ]);
+
+        return response()->json([
+            'message' => 'Something went wrong while deleting the workout.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
 
     public function testWebSocets(){
 

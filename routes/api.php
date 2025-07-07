@@ -38,6 +38,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 Route::post('/generate-workout', [WorkoutController::class, 'generateWorkoutPlan']);
 Route::get('/user-workouts', [WorkoutController::class, 'getAllUserWorkouts']);
+Route::post('/create-workout', [WorkoutController::class, 'storeCustomWorkout']);
+Route::put('/update-workout/{workout}', [WorkoutController::class, 'updateWorkout']);
+Route::delete('/delete-workout/{workout}', [WorkoutController::class, 'deleteWorkout']);
+
+
 
 
 Route::post('/generate-diet', [MealPlanController::class, 'generateDiet']);

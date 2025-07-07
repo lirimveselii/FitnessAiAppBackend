@@ -33,8 +33,18 @@ class Workout extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function exercises()
-    {
-        return $this->hasMany(Exercise::class);
-    }
+public function exercises()
+{
+    return $this->belongsToMany(Exercise::class, 'exercise_workout')
+                ->withPivot([
+                    'sets',
+                    'reps',
+                    'rest_seconds',
+                    'duration_seconds',
+                    'order',
+                    'notes'
+                ])
+                ->withTimestamps();
+}
+
 }
