@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Controllers\WorkoutController;
+use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\FoodController;
 use App\Http\Controllers\MealPlanController;
 use App\Http\Controllers\Auth\AuthController;
@@ -41,6 +42,13 @@ Route::get('/user-workouts', [WorkoutController::class, 'getAllUserWorkouts']);
 Route::post('/create-workout', [WorkoutController::class, 'storeCustomWorkout']);
 Route::put('/update-workout/{workout}', [WorkoutController::class, 'updateWorkout']);
 Route::delete('/delete-workout/{workout}', [WorkoutController::class, 'deleteWorkout']);
+
+
+Route::get('/filter-exercises', [ExerciseController::class, 'filterExercises']);
+
+
+Route::get('/admin/muscle-group-connect', [ExerciseController::class, 'filterExercises']);
+
 
 
 

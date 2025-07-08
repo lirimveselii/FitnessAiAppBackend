@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Workout;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\MuscleGroup;
 
 class Exercise extends Model
 {
@@ -40,6 +41,13 @@ class Exercise extends Model
 public function aliases()
 {
     return $this->hasMany(ExerciseAlias::class);
+}
+
+public function muscleGroups(){
+
+    return $this->belongsToMany(MuscleGroup::class , "exercise_muscle_group")
+    ->withPivot(['role']);
+
 }
 
 }

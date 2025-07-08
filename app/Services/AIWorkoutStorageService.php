@@ -17,7 +17,6 @@ public function store(array $aiData)
     $allNormalizedNames = [];
 
         try {
-        // Step 1: Collect all normalized names
         foreach ($aiData as $data) {
             foreach ($data['exercises'] as $exData) {
                 $allNormalizedNames[] = $exData['normalized_name'];
@@ -26,17 +25,14 @@ public function store(array $aiData)
 
         $allNormalizedNames = array_unique($allNormalizedNames);
 
-        // Step 2: Fetch all exercises and aliases in bulk
         $exercises = Exercise::whereIn('normalized_name', $allNormalizedNames)->get();
         $aliases = ExerciseAlias::whereIn('alias', $allNormalizedNames)->get();
 
-        // Step 3: Build quick-lookup maps
         $exerciseMap = $exercises->keyBy('normalized_name');
         $aliasMap = $aliases->keyBy('alias');
 
         $notFound = [];
 
-        // Step 4: Loop through AI data
         foreach ($aiData as $data) {
             try {
                 $workoutData = $data['workout'];
