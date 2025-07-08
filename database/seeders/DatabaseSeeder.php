@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Database\Seeders\ExerciseSeeders;
+use Database\Seeders\MuscleGroupSeeder;
 use App\Models\AiRecommendation;
 use App\Models\Workout;
 use App\Models\Exercise;
@@ -25,9 +26,6 @@ class DatabaseSeeder extends Seeder
     {
         User::factory(10)->create();
         AiRecommendation::factory(10)->create();
-
-        // Workout::factory()->count(10)->create();
-        // Exercise::factory()->count(10)->create();
         MealPlan::factory()->count(10)->create();
         Food::factory()->count(10)->create();
         UserProgress::factory()->count(10)->create();
@@ -35,6 +33,8 @@ class DatabaseSeeder extends Seeder
 
          $this->call([
         ExerciseSeeder::class,
+        MuscleGroupSeeder::class,
+
         ]);
      
 

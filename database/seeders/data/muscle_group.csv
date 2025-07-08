@@ -1,0 +1,39 @@
+region,muscle_group
+Chest,Pectoralis Major
+Chest,Pectoralis Minor
+Shoulders,Anterior Deltoid (Front)
+Shoulders,Lateral Deltoid (Side)
+Shoulders,Posterior Deltoid (Rear)
+Upper Back,Trapezius (Upper/Mid/Lower)
+Upper Back,Rhomboids
+Lats (Side Back),Latissimus Dorsi
+Lats (Side Back),Teres Major
+Arms,Biceps Brachii
+Arms,Brachialis
+Arms,Brachioradialis
+Arms,Triceps Brachii
+Arms,Forearm Flexors
+Arms,Forearm Extensors
+Core,Rectus Abdominis (Abs)
+Core,External Obliques
+Core,Internal Obliques
+Core,Transverse Abdominis
+Core,Erector Spinae (Lower Back)
+Core,Quadratus Lumborum
+Core,Quadratus Lumborum
+Core,Multifidus
+Glutes,Gluteus Maximus
+Glutes,Gluteus Medius
+Glutes,Gluteus Minimus
+Hip Muscles,Hip Flexors (Iliopsoas)
+Hip Muscles,Tensor Fasciae Latae (TFL)
+Hip Muscles,Piriformis
+Quadriceps,Rectus Femoris
+Quadriceps,Vastus Lateralis
+Quadriceps,Vastus Medialis
+Quadriceps,Vastus Intermedius
+Hamstrings,Biceps Femoris
+Hamstrings,Semitendinosus
+Hamstrings,Semimembranosus
+Adductors,Adductors
+Abductors,Abductors
