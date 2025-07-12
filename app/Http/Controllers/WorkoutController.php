@@ -116,6 +116,7 @@ class WorkoutController extends Controller
             ];
         })->toArray();
 
+        // dd($exerciseData);
         $workout->exercises()->attach($exerciseData);
 
         return response()->json([
@@ -215,12 +216,6 @@ public function deleteWorkout(Workout $workout)
         ], 500);
     }
 }
-
-
-    public function testWebSocets(){
-
-        event(new MessageSent('Hello from Laravel!'));
-    }
 
     
 
