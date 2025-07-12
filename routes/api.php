@@ -11,6 +11,7 @@ use App\Http\Controllers\WorkoutController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\FoodController;
 use App\Http\Controllers\MealPlanController;
+use App\Http\Controllers\WorkoutLogController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PostController;
 use App\Http\Controllers\OpenRouterController;
@@ -48,6 +49,10 @@ Route::get('/filter-exercises', [ExerciseController::class, 'filterExercises']);
 
 
 Route::get('/admin/muscle-group-connect', [ExerciseController::class, 'filterExercises']);
+
+
+
+Route::post('/store-workout-logs', [WorkoutLogController::class, 'storeWorkoutLogs']);
 
 
 
