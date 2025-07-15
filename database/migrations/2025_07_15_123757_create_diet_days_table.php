@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('meal_plans', function (Blueprint $table) {
-            $table->string('day_meal')->nullable();
-            $table->string('meal_type')->nullable();
+        Schema::create('diet_days', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('diet_plan_id')->constrained()->onDelete('cascade');
+            $table->integer('day_number');
+            $table->date('date');
+            $table->timestamps();
         });
     }
 
@@ -22,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('meal_plans', function (Blueprint $table) {
-            $table->dropColumn(['day_meal', 'meal_type']);
-        });
+        Schema::dropIfExists('diet_days');
     }
 };
