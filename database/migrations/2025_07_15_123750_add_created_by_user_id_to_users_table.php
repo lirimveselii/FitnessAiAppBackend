@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('meal_plans', function (Blueprint $table) {
-            $table->json('ingredients')->nullable()->after('day_meal');
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('created_by_user_id')
+      ->nullable()
+      ->constrained('users')
+      ->onDelete('set null');
         });
     }
 
@@ -21,8 +24,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('meal_plans', function (Blueprint $table) {
-             $table->dropColumn([ 'ingredients']);
+        Schema::table('users', function (Blueprint $table) {
+            //
         });
     }
 };

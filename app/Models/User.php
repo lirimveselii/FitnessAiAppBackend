@@ -83,5 +83,19 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(UserProgress::class);
     }
+        public function dietPlans()
+    {
+        return $this->hasMany(DietPlan::class);
+    }
+
+    public function manualMealLogs()
+    {
+        return $this->hasMany(ManualMealLog::class);
+    }
+
+    public function customFoods()
+    {
+        return $this->hasMany(CustomFood::class);
+    }
 
 }
