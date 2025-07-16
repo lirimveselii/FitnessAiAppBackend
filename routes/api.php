@@ -1,5 +1,4 @@
 <?php
-
 use App\Mail\VerifyEmail;
 use App\Events\MessageSent;
 use App\Services\AiService;
@@ -16,6 +15,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PostController;
 use App\Http\Controllers\OpenRouterController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\GoalController;
 
 
 
@@ -31,13 +31,15 @@ Route::post('/forget-password', [AuthController::class, 'forgetPassword']);
 // Route::get('/reset-password/{id}', [AuthController::class, 'resetPassword']);
 Route::post('meta-ai', [AiService::class, 'askHuggingFace']);
 
+
 Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/test-auth', function(){
-            return response()->json(["message" => "the user is authenticated"]);
+        return response()->json(["message" => "the user is authenticated"]);
     });
-    
+
 });
+
 Route::post('/generate-workout', [WorkoutController::class, 'generateWorkoutPlan']);
 Route::get('/user-workouts', [WorkoutController::class, 'getAllUserWorkouts']);
 Route::post('/create-workout', [WorkoutController::class, 'storeCustomWorkout']);
@@ -64,7 +66,7 @@ Route::get('/get-user-diet', [MealPlanController::class, 'getFullDiet']);
 
 
 
-Route::middleware([RoleMiddleware::class . ':admin'])->prefix('admin')->group(function () {
+Route::middleware([RoleMiddleware::class . ':admin'])->prefix('admin')->group(function () {    
 
 
 });
@@ -86,3 +88,9 @@ Route::get('/test-broadcast', function () {
 
 Route::get('/test-meals', [HomeController::class, 'todaysMeals']);
 Route::get('/google-ai', [AiService::class, 'testGoogleAi']);
+
+
+Route::post('/store_goal', [GoalController::class, 'store']);
+Route::get('/goals/{id}', [GoalController::class, 'show']);
+Route::put('/update_goals/{id}', [GoalController::class, 'update']);
+Route::delete('/goals/{id}', [GoalController::class, 'destroy']);

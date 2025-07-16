@@ -47,4 +47,20 @@ class HomeController extends Controller
             ]
         ]);
     }
+
+public function updateCalories(Request $request)
+{
+    $user = auth()->user();
+    $goal = $user->goal;
+
+    $goal->calories_burned += $request->input('calories');
+    $goal->save();
+
+    if ($goal->calories_burned >= $goal->calories_goal) {
+        return response()->json(['message' => 'Congratulations! You have reached your calorie goal.']);
+    }
+
+    return response()->json(['message' => 'Calories added successfully.']);
+}
+    
 }

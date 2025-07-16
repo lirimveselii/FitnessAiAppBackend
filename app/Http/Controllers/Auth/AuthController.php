@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\WorkoutController;
+use App\Models\Goal;
 
 
 
@@ -37,16 +38,16 @@ class AuthController extends Controller
             
 
             $validator = Validator::make($request->all(), [
-                    "name" => "required",
-                    "email" => "required|email|unique:users,email",
-                    "password" => "required",
-                    "confirm_password" => "required|same:password",
-                    "age" => "required|integer|min:13",
-                    "gender" => "required|in:male,female,other",
-                    "height_cm" => "required|numeric",
-                    "weight_kg" => "required|numeric",
-                    "user_type" => "required",
-                ]);
+                        "name" => "required",
+                        "email" => "required|email|unique:users,email",
+                        "password" => "required",
+                        "confirm_password" => "required|same:password",
+                        "age" => "required|integer|min:13",
+                        "gender" => "required|in:male,female,other",
+                        "height_cm" => "required|numeric",
+                        "weight_kg" => "required|numeric",
+                        "user_type" => "required",
+                    ]);
     
             if ($validator->fails()) {
                 Log::warning("Validation failed during registration: " . implode(", ", $validator->errors()->all()));
@@ -67,7 +68,13 @@ class AuthController extends Controller
                 "weight_kg" => $request->weight_kg,
                 "user_type" => $request->user_type,
             ]);    
-            
+            Goal::create([
+                "user_id" => $user->id,
+                "calories_goal" => 2000,       // ose llogaritur sipas peshës/moshës
+                "water_goal" => 2.0,           // litra
+                "calories_burned" => 0,
+                "water_consumed" => 0
+    ]);
             
             Mail::to($request->email)->send(new VerifyEmail($user));
 
