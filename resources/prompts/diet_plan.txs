@@ -1,34 +1,32 @@
-Create a personalized weekly diet plan based on the following user input:
+Generate a personalized diet macro plan based on the following user input:
 
 {
   "diet_goal": "{{diet_goal}}",
-  "dietary_preference": "{{dietary_preference}}",
-  "allergies": "{{allergies}}",
-  "disliked_foods": "{{disliked_foods}}",
+  "plan_duration_days": {{plan_duration_days}},
+  "calorie_goal_source": "{{calorie_goal_source}}",
+  "calorie_target": {{calorie_target}},
+  "macros_source": "{{macros_source}}",
+  "protein_percent": {{protein_percent}},
+  "carbs_percent": {{carbs_percent}},
+  "fats_percent": {{fats_percent}},
   "meals_per_day": {{meals_per_day}},
-  "daily_budget": {{daily_budget}},
-  "region": "{{region}}",
-  "cooking_style": "{{cooking_style}}",
-  "prep_time_per_meal": "{{prep_time_per_meal}}",
-  "track_macros": "{{track_macros}}"
+  "diet_styles": {{diet_styles}},
+  "dietary_restrictions": {{dietary_restrictions}},
+  "has_religious_restrictions": {{has_religious_restrictions}},
+  "religious_type": "{{religious_type}}",
+  "budget_level": "{{budget_level}}",
+  "language": "{{language}}"
 }
 
-Requirements:
+Return only valid JSON. Do not include meals or ingredients.
 
-1. The output must be valid JSON with **no explanations or comments**.
-2. Provide a weekly meal plan with daily meal breakdown (breakfast, lunch, dinner, snacks).
-3. Include nutritional info for each meal (calories, protein, carbs, fat).
-4. Match meals to budget and local ingredients based on the region.
-5. Suggest simple preparation methods that fit the user's cooking time and style.
-6. Avoid any allergens or disliked foods.
+Structure the output as an array with {{plan_duration_days}} objects (one per day). Each object must include:
 
-Return a structured JSON array with 7 objects (one per day), each containing:
+- "day": string (e.g., "Day 1", "Day 2", ..., "Day N")
+- "calories": number (total daily calories)
+- "macros": object with:
+  - "protein": number (grams)
+  - "carbs": number (grams)
+  - "fat": number (grams)
 
-- `day` (string: Monday, ..., Sunday)
-- `meals` (array of objects):
-   - `type` (e.g., breakfast, lunch, dinner, snack)
-   - `meal_name`
-   - `ingredients` (array of strings)
-   - `calories`
-   - `macros`: { protein, carbs, fat }
-   - `prep_instructions`
+Ensure macronutrients match the percentage and calorie targets provided. Distribute consistently across days unless variation is needed for goal optimization.
