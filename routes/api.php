@@ -9,7 +9,7 @@ use App\Http\Middleware\RoleMiddleware;
 use App\Http\Controllers\WorkoutController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\FoodController;
-use App\Http\Controllers\MealPlanController;
+use App\Http\Controllers\DietPlanController;
 use App\Http\Controllers\WorkoutLogController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PostController;
@@ -60,7 +60,9 @@ Route::post('/store-workout-logs', [WorkoutLogController::class, 'storeWorkoutLo
 
 
 
-Route::post('/generate-diet', [MealPlanController::class, 'generateDiet']);
+// Route::post('/generate-diet', [MealPlanController::class, 'generateDiet']);
+Route::post('/generate-diet', [DietPlanController::class, 'generateDiet']);
+
 Route::get('/get-user-diet', [MealPlanController::class, 'getFullDiet']);
 
 

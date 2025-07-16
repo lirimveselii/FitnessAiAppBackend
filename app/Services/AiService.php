@@ -21,9 +21,10 @@ class AIService
 
     public function getDietPlan(array $inputs){
 
-        $prompt = $this->buildDietePrompt($inputs);
+        $prompt = $this->buildDietPrompt($inputs);
+        // dd($prompt);
         $rawResponse = app(AiClient::class)->send($prompt);
-        return AiResponseParser::clean($rawResponse);
+        return  AiResponseParser::clean($rawResponse);
 
     }
 
@@ -48,26 +49,33 @@ class AIService
     return str_replace(array_keys($replacements), array_values($replacements), $template);
 }
 
-public function buildDietePrompt($data) 
+public function buildDietPrompt(array $params): string
 {
-    $template = File::get(resource_path('prompts/diet_plan.txs'));
+    $template = File::get(resource_path('/prompts/diet_plan.txs'));
 
+    $replacements = [
+        '{{diet_goal}}' => $params['diet_goal'],
+        '{{plan_duration_days}}' => $params['plan_duration_days'],
+        '{{calorie_goal_source}}' => $params['calorie_goal_source'],
+        '{{calorie_target}}' => $params['calorie_target'],
+        '{{macros_source}}' => $params['macros_source'],
+        '{{protein_percent}}' => $params['protein_percent'],
+        '{{carbs_percent}}' => $params['carbs_percent'],
+        '{{fats_percent}}' => $params['fats_percent'],
+        '{{meals_per_day}}' => $params['meals_per_day'],
+        '{{fasting_enabled}}' => $params['fasting_enabled'] ? 'true' : 'false',
+        '{{diet_styles}}' => is_array($params['diet_styles']) ? json_encode($params['diet_styles']) : $params['diet_styles'],
+        '{{dietary_restrictions}}' => is_array($params['dietary_restrictions']) ? json_encode($params['dietary_restrictions']) : $params['dietary_restrictions'],
+        '{{has_religious_restrictions}}' => $params['has_religious_restrictions'] ? 'true' : 'false',
+        '{{religious_type}}' => $params['religious_type'],
+        '{{budget_level}}' => $params['budget_level'],
+        '{{language}}' => $params['language'],
+    ];
 
-       $replacements = [
-            '{{diet_goal}}' => $data['diet_goal'] ?? '',
-            '{{dietary_preference}}' => $data['dietary_preference'] ?? '',
-            '{{allergies}}' => is_array($data['allergies']) ? implode(', ', $data['allergies']) : $data['allergies'],
-            '{{disliked_foods}}' => $data['disliked_foods'] ?? '',
-            '{{meals_per_day}}' => $data['meals_per_day'] ?? 3,
-            '{{daily_budget}}' => $data['daily_budget'] ?? 10,
-            '{{region}}' => $data['region'] ?? '',
-            '{{cooking_style}}' => $data['cooking_style'] ?? 'mixed',
-            '{{prep_time_per_meal}}' => $data['prep_time_per_meal'] ?? '15–30 minutes',
-            '{{track_macros}}' => $data['track_macros'] ?? 'no',
-        ];
-
-        return str_replace(array_keys($replacements), array_values($replacements), $template);
+    return str_replace(array_keys($replacements), array_values($replacements), $template);
 }
+
+
     
 
 }
