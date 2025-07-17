@@ -22,6 +22,7 @@ return new class extends Migration
             $table->float('carbs', 6, 2)->nullable();
             $table->float('fats', 6, 2)->nullable();
             $table->enum('source', ['user', 'custom_food_library', 'scanned'])->default('user');
+            $table->date('log_date');
             $table->timestamps();
         });
     }
