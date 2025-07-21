@@ -18,13 +18,6 @@ class FoodController extends Controller
     }
 
 
-    public function generateDiet( Request $request){
-
-        $data = $request->all();
-        $plan = $this->aiService->getDietPlan($data);
-        $this->storeDietPlan($plan);
-
-    }
 
 
 public function storeDietPlan(array $plan): void

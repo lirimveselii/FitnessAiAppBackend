@@ -16,7 +16,7 @@ use App\Http\Controllers\Auth\PostController;
 use App\Http\Controllers\OpenRouterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\GoalController;
-
+use App\Http\Controllers\ManualMealLogController;
 
 
 
@@ -96,3 +96,8 @@ Route::post('/store_goal', [GoalController::class, 'store']);
 Route::get('/goals/{id}', [GoalController::class, 'show']);
 Route::put('/update_goals/{id}', [GoalController::class, 'update']);
 Route::delete('/goals/{id}', [GoalController::class, 'destroy']);
+
+
+
+Route::post('estimated-meal-cal-ai', [ManualMealLogController::class, 'estimatedCaloriesCount']);
+

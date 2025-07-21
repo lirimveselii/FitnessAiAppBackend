@@ -68,13 +68,13 @@ class AuthController extends Controller
                 "weight_kg" => $request->weight_kg,
                 "user_type" => $request->user_type,
             ]);    
-            Goal::create([
-                "user_id" => $user->id,
-                "calories_goal" => 2000,       // ose llogaritur sipas peshës/moshës
-                "water_goal" => 2.0,           // litra
-                "calories_burned" => 0,
-                "water_consumed" => 0
-    ]);
+    //         Goal::create([
+    //             "user_id" => $user->id,
+    //             "calories_goal" => 2000,       // ose llogaritur sipas peshës/moshës
+    //             "water_goal" => 2.0,           // litra
+    //             "calories_burned" => 0,
+    //             "water_consumed" => 0
+    // ]);
             
             Mail::to($request->email)->send(new VerifyEmail($user));
 
