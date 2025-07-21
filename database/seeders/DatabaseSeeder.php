@@ -26,8 +26,7 @@ class DatabaseSeeder extends Seeder
     {
         User::factory(10)->create();
         AiRecommendation::factory(10)->create();
-        MealPlan::factory()->count(10)->create();
-        Food::factory()->count(10)->create();
+        // Food::factory()->count(10)->create();
         UserProgress::factory()->count(10)->create();
         UserPreference::factory()->count(10)->create();
 
@@ -35,16 +34,8 @@ class DatabaseSeeder extends Seeder
         ExerciseSeeder::class,
         MuscleGroupSeeder::class,
 
+
         ]);
      
-
-
-
-
-
-
-
-
-        // User::factory()->create(10);
     }
 }

@@ -20,16 +20,6 @@ class MealPlanController extends Controller
         $this->aiService = $aiService;
     }
 
-
-    public function generateDiet( Request $request){
-
-        $data = $request->all();
-        $plan = $this->aiService->getDietPlan($data);
-        $this->storeDietPlan($plan);
-
-    }
-
-
 public function storeDietPlan(array $plan): void
 {
     foreach ($plan as $dayPlan) {

@@ -62,7 +62,7 @@ class WorkoutController extends Controller
             ]);
     
             $aiService = new AIService();
-            $workoutDataList = $aiService->getWorkoutPlan($data);
+            $workoutDataList = $aiService->getAiWorkoutPlan($data);
 
             $workout = app(AIWorkoutStorageService::class)->store($workoutDataList); // ... auth()->user() when i put the root to the authed groop i will add the 
     

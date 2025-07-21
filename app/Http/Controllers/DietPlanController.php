@@ -22,10 +22,10 @@ class DietPlanController extends Controller
     public function generateDiet( Request $request){
 
         $data = $request->all();
-        $plan = $this->aiService->getDietPlan($data);
-        dd($plan);
-        $storeDiet = app(AiDietStoreService::class)->store($plan);
+        $plan = $this->aiService->getAiDietPlan($data);
+        $storeDiet = app(DietStoreService::class)->store($plan);
 
     }
+
 
 }

@@ -1,0 +1,16 @@
+I will send you a description of a food item.
+
+Your task is to estimate the macronutrient breakdown and total calories for the described food.
+
+Please return the data in the following JSON format:
+
+{
+  "calories": number,
+  "protein_g": number,
+  "carbs_g": number,
+  "fats_g": number
+}
+give me just the json part no text
+
+Here is the food description:
+{{0}}
