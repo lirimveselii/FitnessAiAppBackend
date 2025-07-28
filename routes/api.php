@@ -101,3 +101,4 @@ Route::delete('/goals/{id}', [GoalController::class, 'destroy']);
 
 Route::post('estimated-meal-cal-ai', [ManualMealLogController::class, 'estimatedCaloriesCount']);
 
+?>

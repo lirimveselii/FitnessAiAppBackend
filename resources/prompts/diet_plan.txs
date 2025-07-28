@@ -1,32 +1,55 @@
-Generate a personalized diet macro plan based on the following user input:
+Generate a weekly (7-day) named with week days ex("Monday","Friday"...) personalized diet plan based on the following daily nutritional targets and user preferences:
 
-{
-  "diet_goal": "{{diet_goal}}",
-  "plan_duration_days": {{plan_duration_days}},
-  "calorie_goal_source": "{{calorie_goal_source}}",
-  "calorie_target": {{calorie_target}},
-  "macros_source": "{{macros_source}}",
-  "protein_percent": {{protein_percent}},
-  "carbs_percent": {{carbs_percent}},
-  "fats_percent": {{fats_percent}},
-  "meals_per_day": {{meals_per_day}},
-  "diet_styles": {{diet_styles}},
-  "dietary_restrictions": {{dietary_restrictions}},
-  "has_religious_restrictions": {{has_religious_restrictions}},
-  "religious_type": "{{religious_type}}",
-  "budget_level": "{{budget_level}}",
-  "language": "{{language}}"
+Daily Target:  
+Macros = {{macros}}
+
+User Preferences & Restrictions:
+- Gender: {{gender}}
+- Age: {{age}}
+- Height: {{height}} cm
+- Weight: {{weight}} kg
+- Activity Level: {{activity_level}}
+- Goal: {{goal}}
+- goal_description : {{goal_description}}
+- Goal Speed: {{goal_speed}}
+- Diet Style: {{diet_style}}
+- Dietary Restrictions: {{dietary_restrictions}}
+- Meals Per Day: {{meals_per_day}}
+- Budget Level: {{budget_level}}
+- Fasting: {{fasting_enabled}}
+- Goal Reason: {{goal_reason}}
+- Goal detailed description": "{{goal_description}}",
+
+Important Instructions:
+
+- Distribute the macros evenly across the {{meals_per_day}} meals per day.
+- dont include foods like {{food_you_dont_want}}
+- Keep meals realistic and aligned with the goal and restrictions.
+- Use only ingredients allowed by the user (e.g., halal, gluten-free if specified).
+- Ensure meals are budget-conscious (based on {{budget_level}}).
+- For each ingredient, include an approximate **measurement in grams (g), milliliters (ml), or pieces**.
+- Return output in a structured JSON format with 7 objects (one per day).
+- Ensure all macro values are based on realistic nutritional data per 100g or ml and match actual food databases.
+- Each day must contain {{meals_per_day}} meals. For each meal, include:
+  - "meal_type": (e.g., "breakfast", "lunch", etc.)
+  - "description": (short description of the meal)
+  - "ingredients": [array of ingredient objects with "name" and "amount" (e.g., { "name": "chicken breast", "amount": "150g" })]
+  - "calories": number
+  - "protein": number
+  - "carbs": number
+  - "fat": number
+
+Do not include preparation steps or how to cook the meals. Focus only on structured data and nutrient content per meal.
+
+At the end of the JSON, include a "grocery_list" object that lists all ingredients used across all 7 days and meals, with **total quantities** in grams, ml, or pieces, using this format:
+
+"grocery_list": {
+  "eggs": "10 pieces",
+  "chicken breast": "1.2 kg",
+  "brown rice": "700g",
+  ...
 }
-
-Return only valid JSON. Do not include meals or ingredients.
-
-Structure the output as an array with {{plan_duration_days}} objects (one per day). Each object must include:
-
-- "day": string (e.g., "Day 1", "Day 2", ..., "Day N")
-- "calories": number (total daily calories)
-- "macros": object with:
-  - "protein": number (grams)
-  - "carbs": number (grams)
-  - "fat": number (grams)
-
-Ensure macronutrients match the percentage and calorie targets provided. Distribute consistently across days unless variation is needed for goal optimization.
+"Create two arrays based on a 7-day meal plan:
+An array called diet_plan that contains each day's meals (breakfast, lunch, dinner, and snacks if needed) for 7 days.
+An array called grocery_list that includes all the ingredients needed to prepare the meals in the diet plan, with quantities if possible."
+please return only the JSON of the diet plan — no additional calculations or explanations. You can do calculations under the hood, but I want only the JSON as the result.

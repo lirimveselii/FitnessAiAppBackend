@@ -8,6 +8,12 @@ use App\Models\Meal;
 
 class DietDay extends Model
 {
+
+        protected $fillable = [
+        'diet_plan_id',
+        'day_number',
+        'date',
+    ];
 public function plan()
 {
     return $this->belongsTo(DietPlan::class, 'diet_plan_id');
