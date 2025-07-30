@@ -12,7 +12,15 @@ class AiClient {
 
     public function __construct(){
          $this->baseUrl = 'https://api.together.xyz/v1/chat/completions';
-        $this->model = 'meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8';
+
+
+        // $this->model = 'meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8';
+
+        $this->model = 'meta-llama/Llama-3.3-70B-Instruct-Turbo-Free'; //Free model
+        // $this->model = 'deepseek-ai/DeepSeek-R1-0528-tput';
+
+        
+
     }
 
 public function send(string $prompt): string
@@ -24,7 +32,7 @@ public function send(string $prompt): string
             'Authorization' => 'Bearer ' . $apiKey,
             'Content-Type'  => 'application/json',
         ])
-        ->timeout(60)
+        ->timeout(200)
         ->post($this->baseUrl, [
             'model' => $this->model,
             'messages' => [

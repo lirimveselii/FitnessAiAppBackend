@@ -62,6 +62,8 @@ Route::post('/store-workout-logs', [WorkoutLogController::class, 'storeWorkoutLo
 
 // Route::post('/generate-diet', [MealPlanController::class, 'generateDiet']);
 Route::post('/generate-diet', [DietPlanController::class, 'generateDiet']);
+Route::get('food-library', [DietPlanController::class, 'search']);
+
 
 Route::get('/get-user-diet', [MealPlanController::class, 'getFullDiet']);
 
@@ -101,3 +103,6 @@ Route::delete('/goals/{id}', [GoalController::class, 'destroy']);
 
 Route::post('estimated-meal-cal-ai', [ManualMealLogController::class, 'estimatedCaloriesCount']);
 
+
+
+?>
