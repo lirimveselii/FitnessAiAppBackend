@@ -6,6 +6,7 @@ class AiResponseParser
 {
     public static function clean(string $raw): array
     {
+        dd($raw);
         // Step 1: Trim whitespace
         $clean = trim($raw);
 

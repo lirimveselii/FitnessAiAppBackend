@@ -5,6 +5,7 @@ use App\Services\AiService;
 use App\models\DietDay;
 use App\models\DietPlan;
 use App\models\Meal;
+use App\models\MealIngredient;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
@@ -92,6 +93,20 @@ public function store(array $dietPlna, string $goal): JsonResponse
                     return response()->json([
                         'message' => "Failed to create meal for day {$index}, meal {$mealIndex}.",
                     ], 500);
+                }
+
+                foreach($mealData["ingredients"] as $ingredients ){
+
+
+                    $mealIngredients = MealIngredient::create([
+                        "meal_id" => $meal->id ,
+                        "name"=>$ingredients['name'],
+                        "quantity"=>$ingredients['amount'],
+                        // "unit"=>$ingredients[],
+                        // "calories"=>$ingredients[],
+
+
+                    ]);
                 }
             }
         }

@@ -33,7 +33,13 @@ Important Instructions:
 - Each day must contain {{meals_per_day}} meals. For each meal, include:
   - "meal_type": (e.g., "breakfast", "lunch", etc.)
   - "description": (short description of the meal)
-  - "ingredients": [array of ingredient objects with "name" and "amount" (e.g., { "name": "chicken breast", "amount": "150g" })]
+  - "ingredients": [array of ingredient objects with "name" "unit" , "calories" ,"amount" (e.g.,   "ingredients": [
+    {
+      "name": "Chicken Breast",
+      "amount": 150,
+      "unit": "g",
+      "calories": 165
+    },)]
   - "calories": number
   - "protein": number
   - "carbs": number
