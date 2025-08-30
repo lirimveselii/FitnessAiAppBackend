@@ -20,10 +20,9 @@ class ExerciseController extends Controller
 
      $muscleGroups = $request->input('muscle_groups', []); 
     $role = $request->input('role'); 
-// dd($muscleGroups);
-    $exercises = Exercise::whereHas('muscleGroups', function ($query) use ($muscleGroups, $role) {
+    $exercises = Exercise::whereHas('muscleGroups', function ($query) use ($muscleGroups) {
         if (!empty($muscleGroups)) {
-            $query->whereIn('muscle_group', $muscleGroups);
+            $query->whereIn('region', $muscleGroups);
         }
 
         if (!empty($role)) {
@@ -35,7 +34,6 @@ class ExerciseController extends Controller
         
 
     }
-
 
     public function createExerciseToMuscleGroup(){
 
@@ -70,5 +68,47 @@ public function storeExerciseToMuscleGroup(Request $request)
 
     return redirect()->back()->with('success', 'Muscle groups connected with roles successfully!');
 }
+
+
+    public function searchExercise(Request $request)
+     {
+        $request->validate([
+            'q' => 'required|string|max:120',
+            'per_page' => 'sometimes|integer|min:1|max:50',
+        ]);
+
+        $term = $request->input('q');
+        $perPage = (int) $request->input('per_page', 20);
+
+        $query = Exercise::query()
+            ->with(['aliases:id,exercise_id,alias']) // eager-load aliases
+            ->where(function ($q) use ($term) {
+                $q->where('name', 'like', "%{$term}%")
+                  ->orWhereHas('aliases', function ($qa) use ($term) {
+                      $qa->where('alias', 'like', "%{$term}%");
+                  });
+            })
+            ->distinct();
+
+        // (Optional) simple relevance: exact name match first, then alias, then partials
+        $query->orderByRaw("
+            (CASE
+              WHEN name = ? THEN 0
+              WHEN name LIKE ? THEN 1
+              ELSE 2
+            END), name ASC
+        ", [$term, "{$term}%"]);
+
+        $results = $query->paginate($perPage)->appends($request->query());
+
+        return response()->json([
+            'data' => $results->items(),
+            'meta' => [
+                'page' => $results->currentPage(),
+                'per_page' => $results->perPage(),
+                'total' => $results->total(),
+            ],
+        ]);
+    }
 
 }

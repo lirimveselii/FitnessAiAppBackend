@@ -46,6 +46,7 @@ Route::delete('/delete-workout/{workout}', [WorkoutController::class, 'deleteWor
 Route::get('/filter-exercises', [ExerciseController::class, 'filterExercises']);
 Route::post('/store-workout-logs', [WorkoutLogController::class, 'storeWorkoutLogs']);
 Route::post('estimated-meal-cal-ai', [ManualMealLogController::class, 'estimatedCaloriesCount']);
+Route::get('search-exercise', [ExerciseController::class, 'searchExercise']);
 
 // "Admin" Workout routes
 Route::get('/admin/muscle-group-connect', [ExerciseController::class, 'filterExercises']);

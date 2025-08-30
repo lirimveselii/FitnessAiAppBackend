@@ -67,7 +67,6 @@ class WorkoutController extends Controller
     'structured_or_flexible_plan' => 'required|string|in:structured,flexible',
     'include_nutrition_plan' => 'required|boolean',
 ]);
-
             $workoutDataList = $this->aiService->getAiWorkoutPlan($data);
 
             app(AIWorkoutStorageService::class)->store($workoutDataList); // ... auth()->user() when i put the root to the authed groop i will add the 
@@ -105,7 +104,7 @@ class WorkoutController extends Controller
 
         try {
             $workout = Workout::create([
-                'user_id' => Auth::id() ?? 1, // Replace `1` with actual auth when ready
+                'user_id' => Auth::id() ?? 2, // Replace `1` with actual auth when ready
                 'title' => $validated['name'],
                 'description' => $validated['description'] ?? null,
                 'workout_day' => $validated['workout_day'] ?? null,
