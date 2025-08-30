@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('meals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('diet_day_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('diet_day_id')->nullable()->constrained()->onDelete('cascade')->nullable();
             $table->foreignId('created_by_user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('type', ['breakfast', 'lunch', 'dinner', 'snack']);
             $table->string('title');
             $table->text('instructions')->nullable();
-            $table->float('calories', 6, 2);
+            $table->float('calories', 6, 2)->nullable();
             $table->float('protein', 6, 2)->nullable();
             $table->float('carbs', 6, 2)->nullable();
             $table->float('fats', 6, 2)->nullable();

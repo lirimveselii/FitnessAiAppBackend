@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    'together' => [
+        'api_key' => env('TOGETHER_API_KEY'),
+        'base_url' => env('TOGETHER_BASE_URL', 'https://api.together.xyz/v1/chat/completions'),
+        'model' => env('TOGETHER_MODEL', 'meta-llama/Llama-3.3-70B-Instruct-Turbo-Free'),
+        'timeout' => env('TOGETHER_TIMEOUT', 200),
+        'retries' => env('TOGETHER_RETRIES', 0),
+        'retry_delay' => env('TOGETHER_RETRY_DELAY_MS', 100),
+    ],
+
 ];

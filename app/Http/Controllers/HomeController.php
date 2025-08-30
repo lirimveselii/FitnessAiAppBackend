@@ -5,62 +5,73 @@ namespace App\Http\Controllers;
 use App\Models\MealPlan;
 use App\Models\Workout;
 use App\Http\Controllers\Controller;
-use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 
 class HomeController extends Controller
 {
-   public function todaysMeals()
-{
-    // Merr ditën e sotme (p.sh. Monday, Tuesday...)
-    $today = Carbon::now()->format('l'); // returns full day name (e.g. Monday)
-    $now = Carbon::now('Europe/Skopje');
-    $currentTime = $now->format('h:i:s A'); 
-    
-    // $userId = Auth::id(); // ose vendose manualisht nese je duke testu
+    public function todaysMeals()
+    {
+        // Merr ditën e sotme (p.sh. Monday, Tuesday...)
+        $today = Carbon::now()->format('l'); // returns full day name (e.g. Monday)
+        $now = Carbon::now('Europe/Skopje');
+        $currentTime = $now->format('h:i:s A');
 
-    // Merr vakte për atë ditë dhe për userin (nëse nevojitet)
-    $meals = MealPlan::where('day_meal', $today)
-                     ->where('user_id', 27) // hiqe nëse s’ke user login
-                     ->get();
+        $userId = Auth::id() ?? 1; // fallback for now
+
+        $meals = MealPlan::where('day_meal', $today)
+            ->where('user_id', $userId)
+            ->orderBy('meal_type')
+            ->get();
 
 
-    return response()->json([
-        $currentTime,
-        $today,
-        $meals
-    ]);
-}
+        return response()->json([
+            $currentTime,
+            $today,
+            $meals
+        ]);
+    }
 
     public function currentTodayWorkout()
     {
-        $workout = Workout::whereDate('date', now())->first();
+        $userId = Auth::id() ?? 1; // fallback for now
+        $workout = Workout::whereDate('workout_date', Carbon::today())
+            ->where('user_id', $userId)
+            ->withCount('exercises')
+            ->first();
 
         return response()->json([
             'title' => $workout->title ?? 'Leg Day',
-            'duration' => $workout->duration ?? '45 min',
+            'duration' => isset($workout->duration_min) ? ($workout->duration_min . ' min') : '45 min',
             'workout' => [
-                'title' => $workout->name ?? 'Leg workout',
+                'title' => $workout->title ?? 'Leg workout',
                 'description' => $workout->description ?? 'Strengthen and sculpt your lower body...',
-                'exercises' => $workout->exercise_count ?? 5
+                'exercises' => $workout->exercises_count ?? 5
             ]
         ]);
     }
 
-public function updateCalories(Request $request)
-{
-    $user = auth()->user();
-    $goal = $user->goal;
+    public function updateCalories(Request $request)
+    {
+        $validated = $request->validate([
+            'calories' => 'required|numeric|min:0',
+        ]);
 
-    $goal->calories_burned += $request->input('calories');
-    $goal->save();
+        $user = Auth::user();
+        if (!$user || !$user->goal) {
+            return response()->json(['message' => 'Goal not found for user.'], 404);
+        }
 
-    if ($goal->calories_burned >= $goal->calories_goal) {
-        return response()->json(['message' => 'Congratulations! You have reached your calorie goal.']);
+        $user->goal->calories_burned += (float) $validated['calories'];
+        $user->goal->save();
+
+        if ($user->goal->calories_burned >= $user->goal->calories_goal) {
+            return response()->json(['message' => 'Congratulations! You have reached your calorie goal.']);
+        }
+
+        return response()->json(['message' => 'Calories added successfully.']);
     }
 
-    return response()->json(['message' => 'Calories added successfully.']);
-}
-    
 }

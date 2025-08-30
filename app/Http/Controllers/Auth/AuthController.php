@@ -166,7 +166,6 @@ class AuthController extends Controller
     
             return response()->json([
                 'message' => 'Email verified successfully.',
-                'user' => $user,
                 'token' => $user->createToken('auth_token')->plainTextToken 
             ], 200);
     

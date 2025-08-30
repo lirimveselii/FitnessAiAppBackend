@@ -56,37 +56,25 @@ class DietPlanController extends Controller
 }
 
     public function search()
-    {
-        $apiKey = env('USDA_API_KEY');
-
+      {
         $response = Http::get('https://api.nal.usda.gov/fdc/v1/foods/search', [
-            'query' => 'chicken',
-            'api_key' => $apiKey,
-            'pageSize' => 1, // Just get one item for demo
+            'query' => 'apple', // use a specific word for guaranteed result
+            'pageSize' => 10,
+            'api_key' => env('USDA_API_KEY'),
         ]);
 
         if (!$response->successful()) {
-            return response()->json(['error' => 'Request failed'], 500);
+            return response()->json(['error' => 'API call failed'], 500);
         }
 
-        $foods = $response->json()['foods'];
+        $foods = $response->json()['foods'] ?? [];
 
-        // We'll extract only the most useful fields
-        $filtered = collect($foods)->map(function ($food) {
-            $nutrients = collect($food['foodNutrients'])->keyBy('nutrientName');
+        if (empty($foods)) {
+            return response()->json(['message' => 'No food found'], 404);
+        }
 
-            return [
-                'name' => $food['description'],
-                'brand' => $food['brandName'] ?? null,
-                'serving_size' => $food['servingSize'] . ' ' . $food['servingSizeUnit'],
-                'calories' => $nutrients['Energy']['value'] ?? null,
-                'protein' => $nutrients['Protein']['value'] ?? null,
-                'fat' => $nutrients['Total lipid (fat)']['value'] ?? null,
-                'carbs' => $nutrients['Carbohydrate, by difference']['value'] ?? null,
-            ];
-        });
-
-        return response()->json($filtered);
+        return response()->json(collect($foods)->pluck('description'));
     }
 }
+
 

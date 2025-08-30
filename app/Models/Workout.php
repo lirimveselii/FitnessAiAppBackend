@@ -29,22 +29,22 @@ class Workout extends Model
         'tags',
         'rating',
     ];
-    public function user() 
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
-public function exercises()
-{
-    return $this->belongsToMany(Exercise::class, 'exercise_workout')
-                ->withPivot([
-                    'sets',
-                    'reps',
-                    'rest_seconds',
-                    'duration_seconds',
-                    'order',
-                    'notes'
-                ])
-                ->withTimestamps();
-}
+    public function exercises()
+    {
+        return $this->belongsToMany(Exercise::class, 'exercise_workout')
+            ->withPivot([
+                'sets',
+                'reps',
+                'rest_seconds',
+                'duration_seconds',
+                'order',
+                'notes'
+            ])
+            ->withTimestamps();
+    }
 
 }
