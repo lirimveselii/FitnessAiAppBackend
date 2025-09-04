@@ -1,69 +1,41 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
-use App\Models\MealPlan;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use Throwable;
-use App\Services\AIService;
+use App\Models\Food;
 
 class FoodController extends Controller
 {
-      protected AIService $aiService;
-
-    public function __construct(AIService $aiService){
-
-        $this->aiService = $aiService;
-    }
-
-
-
-
-public function storeDietPlan(array $plan): void
+public function searchFood(Request $request)
 {
-    foreach ($plan as $dayPlan) {
-        $day = $dayPlan['day'] ?? null;
+    // Validate input
+    $validated = $request->validate([
+        'query' => 'required|string|min:2|max:50',
+    ]);
 
-        if (!$day || !isset($dayPlan['meals']) || !is_array($dayPlan['meals'])) {
-            Log::warning('Invalid day plan structure', ['dayPlan' => $dayPlan]);
-            continue; // Skip malformed entry
-        }
+    $query = $validated['query'];
 
-        foreach ($dayPlan['meals'] as $index => $meal) {
-            try {
-                // Validate required fields
-                if (
-                    !isset($meal['meal_name'], $meal['prep_instructions'], $meal['calories'], $meal['macros'], $meal['type']) ||
-                    !isset($meal['macros']['protein'], $meal['macros']['carbs'], $meal['macros']['fat'])
-                ) {
-                    Log::warning('Skipping invalid meal entry', ['meal' => $meal]);
-                    continue;
-                }
+    // Build query: search in multiple columns
+    $foods = Food::query()
+        ->when($query, function ($q) use ($query) {
+            $q->where('name', 'LIKE', "%{$query}%")
+              ->orWhere('category', 'LIKE', "%{$query}%")
+              ->orWhere('description', 'LIKE', "%{$query}%");
+        })
+        ->orderBy('name')
+        ->limit(50)
+        ->get();
 
-                MealPlan::create([
-                    'user_id'     => Auth::id() ?? 1,
-                    'title'       => $meal['meal_name'],
-                    'description' => $meal['prep_instructions'],
-                    'calories'    => (int) $meal['calories'],
-                    'protein_g'   => (float) $meal['macros']['protein'],
-                    'carbs_g'     => (float) $meal['macros']['carbs'],
-                    'fats_g'      => (float) $meal['macros']['fat'],
-                    'day_meal'    => $day,
-                    'meal_type'   => $meal['type'],
-                    'ingredients' => json_encode($meal['ingredients'] ?? []),
-                ]);
-            } catch (Throwable $e) {
-                Log::error('Failed to store meal plan', [
-                    'day' => $day,
-                    'meal_index' => $index,
-                    'meal' => $meal,
-                    'error' => $e->getMessage(),
-                ]);
-               
-                continue;
-            }
-        }
-    }
+    // Return structured JSON
+    return response()->json([
+        'success' => true,
+        'message' => $foods->isEmpty()
+            ? 'No foods found matching your query.'
+            : 'Foods retrieved successfully.',
+        'count' => $foods->count(),
+        'data' => $foods,
+    ]);
 }
+
 }

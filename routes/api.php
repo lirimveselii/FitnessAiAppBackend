@@ -22,7 +22,6 @@ use App\Http\Controllers\ManualMealLogController;
 
 
 // Authentication Routes 
-
 Route::post('/register', [AuthController::class, 'register']);
 Route::post("/login",[AuthController::class,"login"]);
 Route::get('/logout', [AuthController::class,'logout'])->name('logout');
@@ -57,11 +56,12 @@ Route::get('/admin/muscle-group-connect', [ExerciseController::class, 'filterExe
 
 
 
-
+//Diet and Food routes
 // Route::post('/generate-diet', [MealPlanController::class, 'generateDiet']);
 Route::post('/generate-diet', [DietPlanController::class, 'generateDiet']);
 Route::get('food-library', [DietPlanController::class, 'search']);
 Route::get('/get-user-diet', [MealPlanController::class, 'getFullDiet']);
+Route::get('/search-food', [FoodController::class, 'searchFood']);
 
 
 
