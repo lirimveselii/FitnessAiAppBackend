@@ -17,6 +17,7 @@ use App\Http\Controllers\OpenRouterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\ManualMealLogController;
+use App\Http\Controllers\CustomRecepieController;
 
 
 
@@ -62,6 +63,11 @@ Route::post('/generate-diet', [DietPlanController::class, 'generateDiet']);
 Route::get('food-library', [DietPlanController::class, 'search']);
 Route::get('/get-user-diet', [MealPlanController::class, 'getFullDiet']);
 Route::get('/search-food', [FoodController::class, 'searchFood']);
+// Custom Recepie routes
+Route::get('/store-custom-recepie', [CustomRecepieController::class, 'store']);
+Route::get('/get-custom-recepie/{id}', [CustomRecepieController::class, 'show']); //get one recepie based on an id 
+
+
 
 
 
