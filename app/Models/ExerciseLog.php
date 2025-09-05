@@ -24,9 +24,9 @@ class ExerciseLog extends Model
 
 
     public function workoutLog(){
-        return $this->belongesTo(WorkoutLog::class);
+        return $this->belongeTo(WorkoutLog::class);
     }
       public function exercises(){
-        return $this->belongesTo(Exercises::class);
+        return $this->belongsTo(Exercises::class);
     }
 }
