@@ -16,7 +16,7 @@ use App\Http\Controllers\Auth\PostController;
 use App\Http\Controllers\OpenRouterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\GoalController;
-use App\Http\Controllers\ManualMealLogController;
+use App\Http\Controllers\MealLogController;
 use App\Http\Controllers\CustomRecepieController;
 
 
@@ -45,7 +45,7 @@ Route::put('/update-workout/{workout}', [WorkoutController::class, 'updateWorkou
 Route::delete('/delete-workout/{workout}', [WorkoutController::class, 'deleteWorkout']);
 Route::get('/filter-exercises', [ExerciseController::class, 'filterExercises']);
 Route::post('/store-workout-logs', [WorkoutLogController::class, 'storeWorkoutLogs']);
-Route::post('estimated-meal-cal-ai', [ManualMealLogController::class, 'estimatedCaloriesCount']);
+Route::post('estimated-meal-cal-ai', [MealLogController::class, 'estimatedCaloriesCount']);
 Route::get('search-exercise', [ExerciseController::class, 'searchExercise']);
 
 // "Admin" Workout routes
@@ -63,12 +63,15 @@ Route::post('/generate-diet', [DietPlanController::class, 'generateDiet']);
 Route::get('food-library', [DietPlanController::class, 'search']);
 Route::get('/get-user-diet', [MealPlanController::class, 'getFullDiet']);
 Route::get('/search-food', [FoodController::class, 'searchFood']);
+Route::get('/total-daily-calorie', [MealLogController::class, 'dailyCaloriesSummary']);
 // Custom Recepie routes
 Route::get('/store-custom-recepie', [CustomRecepieController::class, 'store']);
 Route::get('/get-custom-recepie/{id}', [CustomRecepieController::class, 'show']); //get one recepie based on an id 
+//Test Diet and Food routes
 
+Route::post('meal-log', [MealLogController::class, 'logMeal']); 
 
-
+//end test routes
 
 
 //Adimin routes
@@ -94,10 +97,13 @@ Route::get('/test-meals', [HomeController::class, 'todaysMeals']);
 Route::get('/google-ai', [AiService::class, 'testGoogleAi']);
 
 // Goals
+Route::get('/get_user_goals', [GoalController::class, 'userGoals']);
 Route::post('/store_goal', [GoalController::class, 'store']);
 Route::get('/goals/{id}', [GoalController::class, 'show']);
 Route::put('/update_goals/{id}', [GoalController::class, 'update']);
 Route::delete('/goals/{id}', [GoalController::class, 'destroy']);
+Route::post('/store-goals-log', [GoalController::class, 'storeGoalLog']);
+
 
 
 

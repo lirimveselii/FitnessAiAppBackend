@@ -12,17 +12,15 @@ return new class extends Migration
     public function up(): void
     {
           Schema::create('goals', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('user_id')->constrained()->onDelete('cascade');
-        $table->string('goal_type'); 
-        $table->float('target_value');
-        $table->float('current_value')->default(0);
-        $table->string('unit');
-        $table->date('start_date')->nullable();
-        $table->date('end_date')->nullable();
-        $table->boolean('is_active')->default(true);
-        $table->string('status')->default('in_progress');
-        $table->timestamps();
+            $table->id();
+            $table->string('code')->unique();           // e.g. 'calories', 'water', 'workouts'
+            $table->string('title');                    // 'Daily Calories', 'Water Intake'
+            $table->text('description')->nullable();
+            $table->string('metric');                   // e.g. 'calories_consumed','water_ml','workouts_completed'
+            $table->float('default_target_value')->nullable(); // e.g. 2000 (calories), 2000 (ml), 3 (workouts)
+            $table->string('unit');                     // e.g. 'kcal','ml','count'
+            $table->json('meta')->nullable();           // any extra rules / filters
+            $table->timestamps();
     });
     }
 
