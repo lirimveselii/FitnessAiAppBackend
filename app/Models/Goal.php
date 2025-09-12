@@ -6,19 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Goal extends Model
 {
-        protected $fillable = [
-    'user_id',
-    'goal_type',
-    'target_value',
-    'current_value',
-    'unit',
-    'start_date',
-    'end_date',
-];
+      protected $fillable = [
+        'code',
+        'title',
+        'description',
+        'metric',
+        'default_target_value',
+        'unit',
+        'meta',
+    ];
 
 
-    public function user()
+      public function users(): BelongsToMany
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class, 'goal_user')
+            ->withPivot(['is_active', 'starts_at', 'ends_at', 'recurrence'])
+            ->withTimestamps();
     }
 }

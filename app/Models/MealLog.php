@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-class ManualMealLog extends Model
+class MealLog extends Model
 {
 
 
   protected $fillable = [
+    'title',
     'user_id',
     'source',
     'meal_type',
@@ -17,7 +18,12 @@ class ManualMealLog extends Model
     'carbs',
     'fats',
     'protein',
+    "date"
 ];
+
+  protected $casts = [
+        'meta' => 'array', // or 'json'
+    ];
 
 public function user()
 {

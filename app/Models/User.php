@@ -101,4 +101,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(CustomFood::class);
     }
 
+
+        public function goals()
+    {
+        return $this->belongsToMany(Goal::class, 'goal_user')
+            ->withPivot(['is_active', 'starts_at', 'ends_at', 'recurrence'])
+            ->withTimestamps();
+    }
+
 }
